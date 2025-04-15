@@ -1,10 +1,9 @@
 import { CardProps } from '../types';
 
-export function Card({ card }: CardProps): JSX.Element {
+export default function CardComponent({ card }: CardProps): JSX.Element {
   const {
-    id,
     isPremium,
-    image,
+    images,
     price,
     isFavorite,
     rating,
@@ -13,7 +12,7 @@ export function Card({ card }: CardProps): JSX.Element {
   } = card;
 
   return (
-    <article key={id} className="cities__card place-card">
+    <article className="cities__card place-card">
       {isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
@@ -23,7 +22,7 @@ export function Card({ card }: CardProps): JSX.Element {
         <a href="#">
           <img
             className="place-card__image"
-            src={image}
+            src={images[0]}
             width={260}
             height={200}
             alt="Place image"
@@ -37,7 +36,7 @@ export function Card({ card }: CardProps): JSX.Element {
             <span className="place-card__price-text">/&nbsp;night</span>
           </div>
           <button
-            className={`place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''}`}
+            className={`place-card__bookmark-button button ${isFavorite && ('place-card__bookmark-button--active')}`}
             type="button"
           >
             <svg className="place-card__bookmark-icon" width={18} height={19}>

@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/app';
-import { cardsData } from './mock/mocks';
+import { generateMockData } from './mock/mocks';
+
+const data = (generateMockData(10));
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -9,6 +11,6 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <App cardsData={ cardsData } />
+    <App placeCardsData = { data } />
   </React.StrictMode>
 );

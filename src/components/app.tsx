@@ -1,9 +1,9 @@
 import MainPage from '../pages/main-page';
 import { AppScreenProps } from '../types';
 
-function App({ cardsData }: AppScreenProps): JSX.Element {
+function App({ placeCardsData }: AppScreenProps): JSX.Element {
   return (
-    <MainPage cardsData={cardsData} />
+    <MainPage placeCardsData = { placeCardsData } />
   );
 }
 

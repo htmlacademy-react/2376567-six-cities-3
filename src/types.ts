@@ -1,24 +1,80 @@
-type PlaceCard = {
-  id: number;
-  isPremium: boolean;
-  image: string;
-  price: number;
-  isFavorite: boolean;
-  rating: number;
+type Location = {
+  latitude: number;
+  longitude: number;
+  zoom: number;
+};
+
+type City = {
+  name: string;
+  location: Location;
+};
+
+type Host = {
+  name: string;
+  avatarUrl: string;
+  isPro: boolean;
+};
+
+type OfferCard = {
+  id: string;
   title: string;
   type: string;
-}
+  price: number;
+  city: City;
+  location: Location;
+  isFavorite: boolean;
+  isPremium: boolean;
+  rating: number;
+  description: string;
+  bedrooms: number;
+  goods: string[];
+  host: Host;
+  images: string[];
+  maxAdults: number;
+};
 
-type AppScreenProps = {
-  cardsData: PlaceCard[];
-}
+type CardGroup = {
+  name: string;
+  cards: OfferCard[];
+};
+
+type FavoritesData = {
+  locations: CardGroup[];
+};
 
 type CardProps = {
-  card: PlaceCard;
+  card: OfferCard;
+};
+
+type PlacesComponentProps = {
+  placeCardsData: OfferCard[];
+};
+
+type AppScreenProps = {
+  placeCardsData: OfferCard[];
 };
 
 type MainPageProps = {
-  cardsData: PlaceCard[];
-}
+  placeCardsData: OfferCard[];
+};
 
-export type {PlaceCard, MainPageProps, CardProps, AppScreenProps};
+type LocationComponentProps = {
+  location: CardGroup;
+};
+
+type FavoritesComponentProps = {
+  data: FavoritesData;
+};
+
+export type {
+  MainPageProps,
+  CardProps,
+  AppScreenProps,
+  Location,
+  FavoritesData,
+  FavoritesComponentProps,
+  CardGroup,
+  OfferCard,
+  PlacesComponentProps,
+  LocationComponentProps
+};

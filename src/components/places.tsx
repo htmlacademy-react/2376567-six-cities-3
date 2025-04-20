@@ -1,45 +1,45 @@
 import CardComponent from './card';
 import { PlacesComponentProps } from '../types';
 
+type SortOption = {
+  value: string;
+  isActive: boolean;
+}
+
+type SortOptions = SortOption[];
+
+const sortOptions:SortOptions = [
+  {
+    value:'Popular',
+    isActive: true
+  },
+  {
+    value:'Price: low to high',
+    isActive: false
+  },
+  {
+    value:'Price: high to low',
+    isActive: false
+  },
+  {
+    value:'Top rated first',
+    isActive: false
+  }
+];
+
+function renderSortOption (sortItem:SortOption):JSX.Element {
+
+  const {
+    value,
+    isActive,
+  } = sortItem;
+
+  return (
+    <li key={value} className={`places__option ${isActive && ('places__option--active')}`} tabIndex={0}>{value}</li>
+  );
+}
+
 export default function PlacesComponent({placeCardsData}:PlacesComponentProps):JSX.Element {
-  type SortOption = {
-    value: string;
-    isActive: boolean;
-  }
-
-  type SortOptions = SortOption[];
-
-  const sortOptions:SortOptions = [
-    {
-      value:'Popular',
-      isActive: true
-    },
-    {
-      value:'Price: low to high',
-      isActive: false
-    },
-    {
-      value:'Price: high to low',
-      isActive: false
-    },
-    {
-      value:'Top rated first',
-      isActive: false
-    }
-  ];
-
-  function renderSortOption (sortItem:SortOption):JSX.Element {
-
-    const {
-      value,
-      isActive,
-    } = sortItem;
-
-    return (
-      <li key={value} className={`places__option ${isActive && ('places__option--active')}`} tabIndex={0}>{value}</li>
-    );
-  }
-
   return (
     <section className="cities__places places">
       <h2 className="visually-hidden">Places</h2>

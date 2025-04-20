@@ -1,7 +1,7 @@
-import { FavoritesComponentProps } from '../types';
+import { FavoritesPageProps } from '../types';
 import { LocationComponent } from '../components/location';
 
-export function FavoritesComponent({ data }:FavoritesComponentProps): JSX.Element {
+export function FavoritesPage({ data }:FavoritesPageProps): JSX.Element {
   const { locations } = data;
 
   return (

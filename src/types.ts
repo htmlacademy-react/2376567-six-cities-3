@@ -62,8 +62,13 @@ type LocationComponentProps = {
   location: CardGroup;
 };
 
-type FavoritesComponentProps = {
+type FavoritesPageProps = {
   data: FavoritesData;
+};
+
+type PrivateRouteProps = {
+  isAuth:boolean;
+  element:JSX.Element;
 };
 
 export type {
@@ -72,9 +77,10 @@ export type {
   AppScreenProps,
   Location,
   FavoritesData,
-  FavoritesComponentProps,
+  FavoritesPageProps,
   CardGroup,
   OfferCard,
   PlacesComponentProps,
-  LocationComponentProps
+  LocationComponentProps,
+  PrivateRouteProps
 };

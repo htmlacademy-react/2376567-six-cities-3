@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom';
 import { LocationComponentProps } from '../types';
 import CardComponent from './card';
+import { AppRoute } from '../const';
 
 export function LocationComponent({ location }: LocationComponentProps): JSX.Element {
   const { name, cards } = location;
@@ -8,9 +10,9 @@ export function LocationComponent({ location }: LocationComponentProps): JSX.Ele
     <li className="favorites__locations-items">
       <div className="favorites__locations locations locations--current">
         <div className="locations__item">
-          <a className="locations__item-link" href="#">
+          <Link className="locations__item-link" to={`${AppRoute.Main}?city=${name}`}>
             <span>{name}</span>
-          </a>
+          </Link>
         </div>
       </div>
       <div className="favorites__places">

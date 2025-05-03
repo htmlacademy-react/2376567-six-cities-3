@@ -1,6 +1,8 @@
 import { CardProps } from '../types';
+import { Link } from 'react-router-dom';
+import { AppRoute } from '../const';
 
-export default function CardComponent({ card }: CardProps): JSX.Element {
+export default function CardComponent({ card, onMouseEnter, onMouseLeave }: CardProps): JSX.Element {
   const {
     isPremium,
     images,
@@ -9,17 +11,34 @@ export default function CardComponent({ card }: CardProps): JSX.Element {
     rating,
     title,
     type,
+    id
   } = card;
 
+  const handleMouseEnter = () => {
+    if (onMouseEnter) {
+      onMouseEnter(id);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (onMouseLeave) {
+      onMouseLeave();
+    }
+  };
+
   return (
-    <article className="cities__card place-card">
+    <article
+      className="cities__card place-card"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       {isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
       )}
       <div className="cities__image-wrapper place-card__image-wrapper">
-        <a href="#">
+        <Link to={`/offer/${id}`}>
           <img
             className="place-card__image"
             src={images[0]}
@@ -27,7 +46,7 @@ export default function CardComponent({ card }: CardProps): JSX.Element {
             height={200}
             alt="Place image"
           />
-        </a>
+        </Link>
       </div>
       <div className="place-card__info">
         <div className="place-card__price-wrapper">
@@ -36,14 +55,14 @@ export default function CardComponent({ card }: CardProps): JSX.Element {
             <span className="place-card__price-text">/&nbsp;night</span>
           </div>
           <button
-            className={`place-card__bookmark-button button ${isFavorite && ('place-card__bookmark-button--active')}`}
+            className={`place-card__bookmark-button button ${isFavorite && 'place-card__bookmark-button--active'}`}
             type="button"
           >
             <svg className="place-card__bookmark-icon" width={18} height={19}>
               <use xlinkHref="#icon-bookmark"></use>
             </svg>
             <span className="visually-hidden">
-              {card.isFavorite ? 'In bookmarks' : 'To bookmarks'}
+              {isFavorite ? 'In bookmarks' : 'To bookmarks'}
             </span>
           </button>
         </div>
@@ -54,10 +73,11 @@ export default function CardComponent({ card }: CardProps): JSX.Element {
           </div>
         </div>
         <h2 className="place-card__name">
-          <a href="#">{title}</a>
+          <Link to={`${AppRoute.Offer}${id}`}>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>
-    </article>);
+    </article>
+  );
 }
 

@@ -18,4 +18,8 @@ function groupByCity(cards: OfferCard[]): FavoritesData {
   };
 }
 
-export { groupByCity };
+const generateUUIDKey = (): `${string}-${string}-${string}-${string}-${string}` => crypto.randomUUID();
+
+const generateTextKey = (text: string, index: number):string => `${text.substring(0, 10)}-${index}`;
+
+export { groupByCity, generateUUIDKey, generateTextKey};

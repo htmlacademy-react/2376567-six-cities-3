@@ -15,7 +15,7 @@ type Host = {
   isPro: boolean;
 };
 
-type Offer = {
+export type Offer = {
   id: string;
   title: string;
   type: string;
@@ -31,6 +31,19 @@ type Offer = {
   host: Host;
   images: string[];
   maxAdults: number;
+  previewImage?: string;
+};
+
+export type Review = {
+  id: string;
+  date: string;
+  user: {
+    name: string;
+    avatarUrl: string;
+    isPro: boolean;
+  };
+  comment: string;
+  rating: number;
 };
 
 const cities: City[] = [
@@ -108,7 +121,14 @@ const DESCRIPTIONS = [
   'Design interior in most sympathetic area! Complitely renovated, well-equipped, cosy studio in idyllic, over 100 years old wooden house.'
 ];
 const NAMES = ['Oliver Conner', 'Angelina', 'Max', 'Alex', 'Sophie', 'Maria'];
-const AVATARS = ['-angelina','-max'];
+const AVATARS = ['-angelina', '-max'];
+const REVIEW_COMMENTS = [
+  'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.',
+  'The building is green and from 18th century.',
+  'Perfect location for walking tours and shopping.',
+  'The host was very helpful and responsive to all our questions.',
+  'Would definitely stay here again!'
+];
 
 function getRandomArrayItem<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)];
@@ -142,17 +162,63 @@ export function generateMockData(count: number): Offer[] {
       rating: Number((Math.random() * 5).toFixed(1)),
       description: getRandomArrayItem(DESCRIPTIONS),
       bedrooms: Math.floor(Math.random() * 4) + 1,
-      goods: getRandomSubarray(GOODS, 6),
+      goods: getRandomSubarray(GOODS, GOODS.length),
       host: {
         name: getRandomArrayItem(NAMES),
-        avatarUrl: `../../markup/img/avatar${getRandomArrayItem(AVATARS)}.jpg`,
+        avatarUrl: `img/avatar${getRandomArrayItem(AVATARS)}.jpg`,
         isPro: Math.random() > 0.5
       },
-      images: Array.from({ length: Math.floor(Math.random() * 5) + 1 }, () =>
-        `../../markup/img/${type}-0${Math.floor(Math.random() * 3) + 1}.jpg`),
-      maxAdults: Math.floor(Math.random() * 4) + 1
+      images: Array.from({ length: 6 }, () => `img/${type}-0${(i % 3) + 1}.jpg`),
+      maxAdults: Math.floor(Math.random() * 4) + 1,
+      previewImage: `img/${type}-01.jpg`
     });
   }
 
   return result;
+}
+
+export function generateMockOffer(id: string): Offer {
+  const city = getRandomArrayItem(cities);
+  const type = getRandomArrayItem(TYPES);
+
+  return {
+    id,
+    title: getRandomArrayItem(TITLES),
+    type,
+    price: Math.floor(Math.random() * 200) + 30,
+    city,
+    location: {
+      latitude: city.location.latitude + (Math.random() * 0.01 - 0.005),
+      longitude: city.location.longitude + (Math.random() * 0.01 - 0.005),
+      zoom: city.location.zoom
+    },
+    isFavorite: Math.random() > 0.7,
+    isPremium: Math.random() > 0.8,
+    rating: Number((Math.random() * 5).toFixed(1)),
+    description: getRandomArrayItem(DESCRIPTIONS),
+    bedrooms: Math.floor(Math.random() * 4) + 1,
+    goods: getRandomSubarray(GOODS, GOODS.length),
+    host: {
+      name: getRandomArrayItem(NAMES),
+      avatarUrl: `img/avatar${getRandomArrayItem(AVATARS)}.jpg`,
+      isPro: Math.random() > 0.5
+    },
+    images: Array.from({ length: 6 }, (_, i) => `img/${type}-0${(i % 3) + 1}.jpg`),
+    maxAdults: Math.floor(Math.random() * 4) + 1,
+    previewImage: `img/${type}-01.jpg`
+  };
+}
+
+export function generateMockReviews(count: number): Review[] {
+  return Array.from({ length: count }, () => ({
+    id: crypto.randomUUID(),
+    date: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString(),
+    user: {
+      name: getRandomArrayItem(NAMES),
+      avatarUrl: `img/avatar${getRandomArrayItem(AVATARS)}.jpg`,
+      isPro: Math.random() > 0.5
+    },
+    comment: getRandomArrayItem(REVIEW_COMMENTS),
+    rating: Math.floor(Math.random() * 5) + 1
+  }));
 }

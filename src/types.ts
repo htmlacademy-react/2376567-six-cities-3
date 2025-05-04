@@ -31,6 +31,16 @@ type OfferCard = {
   host: Host;
   images: string[];
   maxAdults: number;
+  previewImage?: string;
+};
+
+type OfferDetails = OfferCard & {
+  description: string;
+  bedrooms: number;
+  goods: string[];
+  host: Host;
+  images: string[];
+  maxAdults: number;
 };
 
 type CardGroup = {
@@ -44,10 +54,14 @@ type FavoritesData = {
 
 type CardProps = {
   card: OfferCard;
+  onMouseEnter?: (id: string) => void;
+  onMouseLeave?: () => void;
 };
 
 type PlacesComponentProps = {
   placeCardsData: OfferCard[];
+  onMouseEnter?: (id: string) => void;
+  onMouseLeave?: () => void;
 };
 
 type AppScreenProps = {
@@ -67,9 +81,57 @@ type FavoritesPageProps = {
 };
 
 type PrivateRouteProps = {
-  isAuth:boolean;
-  element:JSX.Element;
+  isAuth: boolean;
+  element: JSX.Element;
 };
+
+type ActiveCardType = string | null;
+
+type Review = {
+  id: string;
+  date: string;
+  user: {
+    name: string;
+    avatarUrl: string;
+    isPro: boolean;
+  };
+  comment: string;
+  rating: number;
+};
+
+type OfferPageProps = {
+  offers: OfferCard[];
+}
+
+type MapProps = {
+  city: City;
+  offers: OfferCard[];
+  selectedOffer?: OfferCard | null;
+  className?: string;
+};
+
+type ReviewFormProps = {
+  onSubmit: (data: { rating: number; review: string }) => void;
+};
+
+type ReviewsSectionProps = {
+  reviews: Review[];
+  onReviewSubmit: (data: { rating: number; review: string }) => void;
+};
+
+type ImageURL = string;
+  type GoodItem = string;
+
+  type ImageWithUUID = {
+    url: ImageURL;
+    id: string;
+  };
+
+  type GoodWithUUID = {
+    goodItem: GoodItem;
+    id: string;
+  };
+
 
 export type {
   MainPageProps,
@@ -80,7 +142,18 @@ export type {
   FavoritesPageProps,
   CardGroup,
   OfferCard,
+  OfferDetails,
   PlacesComponentProps,
   LocationComponentProps,
-  PrivateRouteProps
+  PrivateRouteProps,
+  ActiveCardType,
+  OfferPageProps,
+  Review,
+  MapProps,
+  Host,
+  City,
+  ReviewFormProps,
+  ReviewsSectionProps,
+  ImageWithUUID,
+  GoodWithUUID
 };

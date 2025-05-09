@@ -209,7 +209,7 @@ export function generateMockOffer(id: string): Offer {
   };
 }
 
-export function generateMockReviews(count: number): Review[] {
+function generateMockReviews(count: number): Review[] {
   return Array.from({ length: count }, () => ({
     id: crypto.randomUUID(),
     date: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString(),
@@ -222,3 +222,5 @@ export function generateMockReviews(count: number): Review[] {
     rating: Math.floor(Math.random() * 5) + 1
   }));
 }
+
+export { generateMockReviews, cities };

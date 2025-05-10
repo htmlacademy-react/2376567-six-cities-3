@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 type Location = {
   latitude: number;
   longitude: number;
@@ -70,6 +72,8 @@ type AppScreenProps = {
 
 type MainPageProps = {
   placeCardsData: OfferCard[];
+  activeCard?: string | null;
+  setActiveCard?: Dispatch<SetStateAction<string | null>>;
 };
 
 type LocationComponentProps = {
@@ -101,6 +105,8 @@ type Review = {
 
 type OfferPageProps = {
   offers: OfferCard[];
+  activeCard?: string | null;
+  setActiveCard?: Dispatch<SetStateAction<string | null>>;
 }
 
 type ReviewFormProps = {
@@ -132,6 +138,12 @@ type ImageURL = string;
     className?: string;
   };
 
+  type NearPlacesProps = {
+    offers: OfferCard[];
+    onMouseEnter?: (id: string) => void;
+    onMouseLeave?: () => void;
+  };
+
 
 export type {
   MainPageProps,
@@ -156,4 +168,5 @@ export type {
   ReviewsSectionProps,
   ImageWithUUID,
   GoodWithUUID,
+  NearPlacesProps
 };

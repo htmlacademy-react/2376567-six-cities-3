@@ -139,7 +139,7 @@ function getRandomSubarray<T>(array: T[], maxLength: number): T[] {
   return [...array].sort(() => 0.5 - Math.random()).slice(0, length);
 }
 
-export function generateMockData(count: number): Offer[] {
+function generateMockData(count: number): Offer[] {
   const result: Offer[] = [];
 
   for (let i = 0; i < count; i++) {
@@ -223,4 +223,4 @@ function generateMockReviews(count: number): Review[] {
   }));
 }
 
-export { generateMockReviews, cities };
+export { generateMockData, generateMockReviews, cities };

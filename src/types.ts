@@ -103,13 +103,6 @@ type OfferPageProps = {
   offers: OfferCard[];
 }
 
-type MapProps = {
-  city: City;
-  offers: OfferCard[];
-  selectedOffer?: OfferCard | null;
-  className?: string;
-};
-
 type ReviewFormProps = {
   onSubmit: (data: { rating: number; review: string }) => void;
 };
@@ -130,6 +123,13 @@ type ImageURL = string;
   type GoodWithUUID = {
     goodItem: GoodItem;
     id: string;
+  };
+
+  type MapProps = {
+    city: City;
+    offers: OfferCard[];
+    selectedOffer?: OfferCard | null;
+    className?: string;
   };
 
 
@@ -155,5 +155,5 @@ export type {
   ReviewFormProps,
   ReviewsSectionProps,
   ImageWithUUID,
-  GoodWithUUID
+  GoodWithUUID,
 };

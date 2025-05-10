@@ -4,12 +4,24 @@ import { OfferDetails, Review, OfferPageProps, ImageWithUUID, GoodWithUUID } fro
 import { ReviewsSection } from '../components/review';
 import { generateMockReviews } from '../mock/mocks';
 import { generateUUIDKey, generateTextKey } from '../utils';
+import MapComponent from '../components/map';
+import { cities } from '../mock/mocks';
+import NearPlacesComponent from '../components/near-places';
 
-export function OfferPage({ offers }: OfferPageProps): JSX.Element {
+export function OfferPage({ offers, activeCard, setActiveCard }: OfferPageProps): JSX.Element {
   const { id } = useParams<{ id: string }>();
   const [reviews, setReviews] = useState<Review[]>(generateMockReviews(3));
 
+  const amsterdam = cities.find((city) => city.name === 'Amsterdam')!;
+
+  const amsterdamOffers = offers.filter((offer) => offer.city.name === 'Amsterdam');
+
+  const selectedOffer = activeCard
+    ? amsterdamOffers.find((offer) => offer.id === activeCard)
+    : null;
+
   const offerCard = offers.find((offer) => offer.id === id);
+
 
   if (!offerCard) {
     return <div>Offer not found</div>;
@@ -162,7 +174,20 @@ export function OfferPage({ offers }: OfferPageProps): JSX.Element {
 
           </div>
         </div>
-        <section className="offer__map map"></section>
+        <section className="offer__map map">
+          <MapComponent
+            city={amsterdam}
+            offers={amsterdamOffers}
+            selectedOffer={selectedOffer}
+          />
+        </section>
+        <div className="container">
+          <NearPlacesComponent
+            offers={amsterdamOffers.filter((amsterdamOffer) => amsterdamOffer.id !== id)}
+            onMouseEnter={(offerId) => setActiveCard?.(offerId)}
+            onMouseLeave={() => setActiveCard?.(null)}
+          />
+        </div>
       </section>
     </main>
   );

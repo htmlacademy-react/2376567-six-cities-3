@@ -4,10 +4,8 @@ import LocationListComponent from '../components/location-list';
 import PlacesComponent from '../components/places';
 import MapComponent from '../components/map';
 import { cities } from '../mock/mocks';
-import { useState } from 'react';
 
-function MainPage({ placeCardsData }: MainPageProps): JSX.Element {
-  const [activeCard, setActiveCard] = useState<string | null>(null);
+function MainPage({ placeCardsData, setActiveCard, activeCard }: MainPageProps): JSX.Element {
 
   const amsterdam = cities.find((city) => city.name === 'Amsterdam')!;
 
@@ -34,8 +32,8 @@ function MainPage({ placeCardsData }: MainPageProps): JSX.Element {
           <div className="cities__places-container container">
             <PlacesComponent
               placeCardsData={amsterdamOffers}
-              onMouseEnter={(id) => setActiveCard(id)}
-              onMouseLeave={() => setActiveCard(null)}
+              onMouseEnter={(id) => setActiveCard?.(id)}
+              onMouseLeave={() => setActiveCard?.(null)}
             />
 
             <div className="cities__right-section">

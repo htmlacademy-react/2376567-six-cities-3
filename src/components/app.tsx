@@ -8,17 +8,19 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { groupByCity } from '../utils';
 import PrivateRoute from './private-route';
 import { OfferPage } from '../pages/offer';
+import { useState } from 'react';
 
 function App({ placeCardsData }: AppScreenProps): JSX.Element {
+  const [activeCard, setActiveCard] = useState<string | null>(null);
   const isAuth = false;
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={AppRoute.Main} element={<MainPage placeCardsData={placeCardsData}/>}/>
+        <Route path={AppRoute.Main} element={<MainPage placeCardsData={placeCardsData} activeCard={activeCard} setActiveCard={setActiveCard}/>}/>
         <Route path={AppRoute.Login} element={<LoginPage/>}/>
         <Route
           path={`${AppRoute.Offer}:id`}
-          element={<OfferPage offers={placeCardsData} />}
+          element={<OfferPage offers={placeCardsData} activeCard={activeCard} setActiveCard = {setActiveCard}/>}
         />
         <Route path={AppRoute.Favorites} element={
           <PrivateRoute isAuth={isAuth} element={<FavoritesPage data={groupByCity(placeCardsData)}/>}/>

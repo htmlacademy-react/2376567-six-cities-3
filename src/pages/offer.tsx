@@ -8,7 +8,7 @@ import MapComponent from '../components/map';
 import { cities } from '../mock/mocks';
 import NearPlacesComponent from '../components/near-places';
 
-export function OfferPage({ offers, activeCard, setActiveCard }: OfferPageProps): JSX.Element {
+export function OfferPage({ offers, activeCard }: OfferPageProps): JSX.Element {
   const { id } = useParams<{ id: string }>();
   const [reviews, setReviews] = useState<Review[]>(generateMockReviews(3));
 
@@ -184,8 +184,6 @@ export function OfferPage({ offers, activeCard, setActiveCard }: OfferPageProps)
         <div className="container">
           <NearPlacesComponent
             offers={amsterdamOffers.filter((amsterdamOffer) => amsterdamOffer.id !== id)}
-            onMouseEnter={(offerId) => setActiveCard?.(offerId)}
-            onMouseLeave={() => setActiveCard?.(null)}
           />
         </div>
       </section>

@@ -1,17 +1,6 @@
 import { NearPlacesProps } from '../types';
 
-export default function NearPlacesComponent({ offers, onMouseEnter, onMouseLeave }: NearPlacesProps): JSX.Element {
-  const handleMouseEnter = (id: string) => {
-    if (onMouseEnter) {
-      onMouseEnter(id);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (onMouseLeave) {
-      onMouseLeave();
-    }
-  };
+export default function NearPlacesComponent({ offers }: NearPlacesProps): JSX.Element {
 
   return (
     <section className="near-places places">
@@ -21,8 +10,6 @@ export default function NearPlacesComponent({ offers, onMouseEnter, onMouseLeave
           <article
             key={offer.id}
             className="near-places__card place-card"
-            onMouseEnter={() => handleMouseEnter(offer.id)}
-            onMouseLeave={handleMouseLeave}
           >
             {offer.isPremium && (
               <div className="place-card__mark">

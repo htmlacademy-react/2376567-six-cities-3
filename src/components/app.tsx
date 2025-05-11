@@ -20,7 +20,7 @@ function App({ placeCardsData }: AppScreenProps): JSX.Element {
         <Route path={AppRoute.Login} element={<LoginPage/>}/>
         <Route
           path={`${AppRoute.Offer}:id`}
-          element={<OfferPage offers={placeCardsData} activeCard={activeCard}/>}
+          element={<OfferPage offers={placeCardsData} activeCard={activeCard} setActiveCard = {setActiveCard}/>}
         />
         <Route path={AppRoute.Favorites} element={
           <PrivateRoute isAuth={isAuth} element={<FavoritesPage data={groupByCity(placeCardsData)}/>}/>

@@ -140,6 +140,7 @@ type ImageURL = string;
 
   type NearPlacesProps = {
     offers: OfferCard[];
+    setActiveCard?: Dispatch<SetStateAction<string | null>>;
     onMouseEnter?: (id: string) => void;
     onMouseLeave?: () => void;
   };

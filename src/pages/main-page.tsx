@@ -30,19 +30,28 @@ function MainPage({ placeCardsData, setActiveCard, activeCard }: MainPageProps):
         </div>
         <div className="cities">
           <div className="cities__places-container container">
-            <PlacesComponent
-              placeCardsData={amsterdamOffers}
-              onMouseEnter={(id) => setActiveCard?.(id)}
-              onMouseLeave={() => setActiveCard?.(null)}
-            />
+            {amsterdamOffers.length > 0 ? (
+              <PlacesComponent
+                placeCardsData={amsterdamOffers}
+                onMouseEnter={(id) => setActiveCard?.(id)}
+                onMouseLeave={() => setActiveCard?.(null)}
+              />
+            ) : (
+              <section className="cities__places places">
+                <h2 className="visually-hidden">Places</h2>
+                <b className="places__found">No places to stay available</b>
+              </section>
+            )}
 
             <div className="cities__right-section">
               <section className="cities__map map">
-                <MapComponent
-                  city={amsterdam}
-                  offers={amsterdamOffers}
-                  selectedOffer={selectedOffer}
-                />
+                {amsterdamOffers.length > 0 && (
+                  <MapComponent
+                    city={amsterdam}
+                    offers={amsterdamOffers}
+                    selectedOffer={selectedOffer}
+                  />
+                )}
               </section>
             </div>
           </div>

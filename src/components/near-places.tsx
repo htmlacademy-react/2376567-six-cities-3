@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom';
+import { AppRoute } from '../const';
 import { NearPlacesProps } from '../types';
 
-export default function NearPlacesComponent({ offers }: NearPlacesProps): JSX.Element {
+export default function NearPlacesComponent({ offers, setActiveCard }: NearPlacesProps): JSX.Element {
 
   return (
     <section className="near-places places">
@@ -17,7 +19,11 @@ export default function NearPlacesComponent({ offers }: NearPlacesProps): JSX.El
               </div>
             )}
             <div className="near-places__image-wrapper place-card__image-wrapper">
-              <a href="#">
+              <Link to={`${AppRoute.Offer}${offer.id}`} onClick={() => {
+                setActiveCard?.(offer.id);
+                window.scrollTo(0, 0);
+              }}
+              >
                 <img
                   className="place-card__image"
                   src={offer.previewImage}
@@ -25,7 +31,7 @@ export default function NearPlacesComponent({ offers }: NearPlacesProps): JSX.El
                   height={200}
                   alt="Place image"
                 />
-              </a>
+              </Link>
             </div>
             <div className="place-card__info">
               <div className="place-card__price-wrapper">
@@ -52,7 +58,13 @@ export default function NearPlacesComponent({ offers }: NearPlacesProps): JSX.El
                 </div>
               </div>
               <h2 className="place-card__name">
-                <a href="#">{offer.title}</a>
+                <Link to={`${AppRoute.Offer}${offer.id}`} onClick={(evt) => {
+                  evt.stopPropagation();
+                  setActiveCard?.(offer.id);
+                  window.scrollTo(0, 0);
+                }}
+                >{offer.title}
+                </Link>
               </h2>
               <p className="place-card__type">{offer.type}</p>
             </div>

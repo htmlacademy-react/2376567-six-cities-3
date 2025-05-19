@@ -28,8 +28,16 @@ export default function useMap(mapRef: React.RefObject<HTMLElement>, city: City)
 
       setMap(instance);
       isRenderedRef.current = true;
+    } else {
+      if (map) {
+        map.setView(
+          [city.location.latitude, city.location.longitude],
+          city.location.zoom
+        );
+      }
     }
-  }, [mapRef, city]);
+
+  }, [mapRef, city, map]);
 
   return map;
 }

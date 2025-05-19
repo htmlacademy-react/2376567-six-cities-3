@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/app';
 import { generateMockData } from './mock/mocks';
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 const data = (generateMockData(10));
 
@@ -11,6 +13,6 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <App placeCardsData = { data } />
+    <Provider store={store}><App placeCardsData = { data } /></Provider>
   </React.StrictMode>
 );

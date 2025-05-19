@@ -1,14 +1,19 @@
+import { cities } from '../mock/mocks';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeCity } from '../appSlice';
+import { AppState } from '../types';
+
 type LocationItem = {
   name: string;
   isActive: boolean;
-}
+};
 
 type LocationItemArray = LocationItem[];
 
 const locationItems: LocationItemArray = [
   {
     name: 'Paris',
-    isActive: false
+    isActive: true
   },
   {
     name: 'Cologne',
@@ -20,7 +25,7 @@ const locationItems: LocationItemArray = [
   },
   {
     name: 'Amsterdam',
-    isActive: true
+    isActive: false
   },
   {
     name: 'Hamburg',
@@ -32,16 +37,25 @@ const locationItems: LocationItemArray = [
   },
 ];
 
-function renderLocationItem(locationItem: LocationItem): JSX.Element {
-
-  const {
-    name,
-    isActive
-  } = locationItem;
+function LocationItem(locationItem: LocationItem): JSX.Element {
+  const { name, isActive } = locationItem;
+  const dispatch = useDispatch();
 
   return (
     <li key={name} className="locations__item">
-      <a className={`locations__item-link tabs__item ${isActive && ('tabs__item--active')}`} href="#">
+      <a
+        className={`locations__item-link tabs__item ${isActive ? 'tabs__item--active' : ''}`}
+        onClick={(evt) => {
+          evt.preventDefault();
+          const newCity = cities.find((city) => city.name === name);
+          if (newCity) {
+            dispatch(changeCity({
+              name: newCity.name,
+              location: newCity.location
+            }));
+          }
+        }}
+      >
         <span>{name}</span>
       </a>
     </li>
@@ -49,12 +63,17 @@ function renderLocationItem(locationItem: LocationItem): JSX.Element {
 }
 
 export default function LocationListComponent(): JSX.Element {
+  const currentCity = useSelector((state: { app: AppState }) => state.app.name);
+  const updatedLocationItems = locationItems.map((item) => ({
+    ...item,
+    isActive: item.name === currentCity
+  }));
 
   return (
     <div>
       <section className="locations container">
         <ul className="locations__list tabs__list">
-          {locationItems.map((item) => renderLocationItem(item))}
+          {updatedLocationItems.map((item) => LocationItem(item))}
         </ul>
       </section>
     </div>

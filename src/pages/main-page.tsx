@@ -3,18 +3,16 @@ import HeaderComponent from '../components/header';
 import LocationListComponent from '../components/location-list';
 import PlacesComponent from '../components/places';
 import MapComponent from '../components/map';
-import { cities } from '../mock/mocks';
+import { useSelector } from 'react-redux';
+import { AppState } from '../types';
 
 function MainPage({ placeCardsData, setActiveCard, activeCard }: MainPageProps): JSX.Element {
 
-  const amsterdam = cities.find((city) => city.name === 'Amsterdam')!;
-
-  const amsterdamOffers = placeCardsData.filter(
-    (offer) => offer.city.name === 'Amsterdam'
-  );
+  const city = useSelector((state: { app: AppState }) => state.app);
+  const cityOffers = placeCardsData.filter((offer) => offer.city.name === city.name);
 
   const selectedOffer = activeCard
-    ? amsterdamOffers.find((offer) => offer.id === activeCard)
+    ? cityOffers.find((offer) => offer.id === activeCard)
     : null;
 
   return (
@@ -30,9 +28,9 @@ function MainPage({ placeCardsData, setActiveCard, activeCard }: MainPageProps):
         </div>
         <div className="cities">
           <div className="cities__places-container container">
-            {amsterdamOffers.length > 0 ? (
+            {cityOffers.length > 0 ? (
               <PlacesComponent
-                placeCardsData={amsterdamOffers}
+                placeCardsData={cityOffers}
                 onMouseEnter={(id) => setActiveCard?.(id)}
                 onMouseLeave={() => setActiveCard?.(null)}
               />
@@ -45,10 +43,10 @@ function MainPage({ placeCardsData, setActiveCard, activeCard }: MainPageProps):
 
             <div className="cities__right-section">
               <section className="cities__map map">
-                {amsterdamOffers.length > 0 && (
+                {cityOffers.length > 0 && (
                   <MapComponent
-                    city={amsterdam}
-                    offers={amsterdamOffers}
+                    city={city}
+                    offers={cityOffers}
                     selectedOffer={selectedOffer}
                   />
                 )}

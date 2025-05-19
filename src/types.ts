@@ -6,10 +6,15 @@ type Location = {
   zoom: number;
 };
 
+// type City = {
+//   name: string;
+//   location: Location;
+// };
+
 type City = {
   name: string;
   location: Location;
-};
+}
 
 type Host = {
   name: string;
@@ -145,6 +150,11 @@ type ImageURL = string;
     onMouseLeave?: () => void;
   };
 
+  type AppState = {
+  name: string;
+  location: Location;
+  // offers: OfferCard[];
+}
 
 export type {
   MainPageProps,
@@ -169,5 +179,6 @@ export type {
   ReviewsSectionProps,
   ImageWithUUID,
   GoodWithUUID,
-  NearPlacesProps
+  NearPlacesProps,
+  AppState
 };

@@ -12,7 +12,7 @@ import { useState } from 'react';
 
 function App({ placeCardsData }: AppScreenProps): JSX.Element {
   const [activeCard, setActiveCard] = useState<string | null>(null);
-  const isAuth = false;
+  const isAuth = true;
   return (
     <BrowserRouter>
       <Routes>

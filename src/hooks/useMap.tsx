@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import leaflet from 'leaflet';
-import { City } from '../types';
+import { CityState} from '../types';
 
-export default function useMap(mapRef: React.RefObject<HTMLElement>, city: City) {
+export default function useMap(mapRef: React.RefObject<HTMLElement>, { city }: CityState) {
+
+
   const [map, setMap] = useState<leaflet.Map | null>(null);
   const isRenderedRef = useRef(false);
 
@@ -28,8 +30,16 @@ export default function useMap(mapRef: React.RefObject<HTMLElement>, city: City)
 
       setMap(instance);
       isRenderedRef.current = true;
+    } else {
+      if (map) {
+        map.setView(
+          [city.location.latitude, city.location.longitude],
+          city.location.zoom
+        );
+      }
     }
-  }, [mapRef, city]);
+
+  }, [mapRef, city, map]);
 
   return map;
 }

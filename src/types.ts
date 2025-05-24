@@ -6,10 +6,15 @@ type Location = {
   zoom: number;
 };
 
+// type City = {
+//   name: string;
+//   location: Location;
+// };
+
 type City = {
   name: string;
   location: Location;
-};
+}
 
 type Host = {
   name: string;
@@ -66,9 +71,9 @@ type PlacesComponentProps = {
   onMouseLeave?: () => void;
 };
 
-type AppScreenProps = {
-  placeCardsData: OfferCard[];
-};
+// type AppScreenProps = {
+//   placeCardsData: OfferCard[];
+// };
 
 type MainPageProps = {
   placeCardsData: OfferCard[];
@@ -132,7 +137,7 @@ type ImageURL = string;
   };
 
   type MapProps = {
-    city: City;
+    city: CityState;
     offers: OfferCard[];
     selectedOffer?: OfferCard | null;
     className?: string;
@@ -145,11 +150,15 @@ type ImageURL = string;
     onMouseLeave?: () => void;
   };
 
+  type CityState = {
+    city: City;
+}
+
+type OffersState = OfferCard[];
 
 export type {
   MainPageProps,
   CardProps,
-  AppScreenProps,
   Location,
   FavoritesData,
   FavoritesPageProps,
@@ -169,5 +178,7 @@ export type {
   ReviewsSectionProps,
   ImageWithUUID,
   GoodWithUUID,
-  NearPlacesProps
+  NearPlacesProps,
+  CityState,
+  OffersState
 };

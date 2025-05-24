@@ -1,5 +1,8 @@
 import CardComponent from './card';
 import { PlacesComponentProps } from '../types';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectCurrentCityName } from '../redux/citySelectors';
 
 type SortOption = {
   value: string;
@@ -8,7 +11,7 @@ type SortOption = {
 
 type SortOptions = SortOption[];
 
-const sortOptions: SortOptions = [
+const initialSortOptions: SortOptions = [
   {
     value: 'Popular',
     isActive: true
@@ -27,36 +30,73 @@ const sortOptions: SortOptions = [
   }
 ];
 
-function renderSortOption(sortItem: SortOption): JSX.Element {
-  const { value, isActive } = sortItem;
+function SortOption({ option, onClick }: { option: SortOption; onClick: () => void }) {
+  const { value, isActive } = option;
+
   return (
-    <li key={value} className={`places__option ${isActive && 'places__option--active'}`} tabIndex={0}>
+    <li
+      className={`places__option ${isActive ? 'places__option--active' : ''}`}
+      tabIndex={0}
+      onClick={onClick}
+    >
       {value}
     </li>
   );
 }
 
 export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseLeave }: PlacesComponentProps): JSX.Element {
-  const numberOfPlaces = placeCardsData.length;
 
-  return (
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const [options, setOptions] = useState<SortOptions>(initialSortOptions);
+
+  const handleOptionClick = (clickedValue: string) => {
+    setOptions((prevOptions) =>
+      prevOptions.map((option) => ({
+        ...option,
+        isActive: option.value === clickedValue,
+      }))
+    );
+  };
+
+  const currentCity = useSelector(selectCurrentCityName);
+
+  const filteredOffers = placeCardsData.filter((offer) => offer.city.name === currentCity);
+
+  const numberOfPlaces = filteredOffers.length;
+
+  return filteredOffers.length > 0 ? (
     <section className="cities__places places">
       <h2 className="visually-hidden">Places</h2>
-      <b className="places__found">{numberOfPlaces} places to stay in Amsterdam</b>
+      <b className="places__found">
+        {numberOfPlaces} places to stay in {currentCity}
+      </b>
+
       <form className="places__sorting" action="#" method="get">
         <span className="places__sorting-caption">Sort by</span>
-        <span className="places__sorting-type" tabIndex={0}>
-          Popular
+        <span
+          className="places__sorting-type"
+          tabIndex={0}
+          onClick={() => setIsSortOpen((state) => !state)}
+        >
+        Popular
           <svg className="places__sorting-arrow" width={7} height={4}>
             <use xlinkHref="#icon-arrow-select"></use>
           </svg>
         </span>
-        <ul className="places__options places__options--custom places__options--opened">
-          {sortOptions.map((item) => renderSortOption(item))}
+
+        <ul className={`places__options places__options--custom ${isSortOpen && 'places__options--opened'}`}>
+          {options.map((option) => (
+            <SortOption
+              key={option.value}
+              option={option}
+              onClick={() => handleOptionClick(option.value)}
+            />
+          ))}
         </ul>
       </form>
+
       <div className="cities__places-list places__list tabs__content">
-        {placeCardsData.map((card) => (
+        {filteredOffers.map((card) => (
           <CardComponent
             key={card.id}
             card={card}
@@ -65,6 +105,11 @@ export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseL
           />
         ))}
       </div>
+    </section>
+  ) : (
+    <section className="cities__places places">
+      <h2 className="visually-hidden">Places</h2>
+      <b className="places__found">No places to stay available</b>
     </section>
   );
 }

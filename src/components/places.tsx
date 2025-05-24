@@ -56,15 +56,33 @@ export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseL
         isActive: option.value === clickedValue,
       }))
     );
+    setIsSortOpen(false);
   };
 
   const currentCity = useSelector(selectCurrentCityName);
 
   const filteredOffers = placeCardsData.filter((offer) => offer.city.name === currentCity);
 
+  const activeSortType = options.find((option) => option.isActive)?.value || 'Popular';
+
+  let sortedOffers;
+  switch (activeSortType) {
+    case 'Price: low to high':
+      sortedOffers = [...filteredOffers].sort((a, b) => a.price - b.price);
+      break;
+    case 'Price: high to low':
+      sortedOffers = [...filteredOffers].sort((a, b) => b.price - a.price);
+      break;
+    case 'Top rated first':
+      sortedOffers = [...filteredOffers].sort((a, b) => b.rating - a.rating);
+      break;
+    default:
+      sortedOffers = filteredOffers;
+  }
+
   const numberOfPlaces = filteredOffers.length;
 
-  return filteredOffers.length > 0 ? (
+  return sortedOffers.length > 0 ? (
     <section className="cities__places places">
       <h2 className="visually-hidden">Places</h2>
       <b className="places__found">
@@ -78,12 +96,11 @@ export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseL
           tabIndex={0}
           onClick={() => setIsSortOpen((state) => !state)}
         >
-        Popular
+          {options.find((item) => item.isActive)?.value || 'Popular'}
           <svg className="places__sorting-arrow" width={7} height={4}>
             <use xlinkHref="#icon-arrow-select"></use>
           </svg>
         </span>
-
         <ul className={`places__options places__options--custom ${isSortOpen && 'places__options--opened'}`}>
           {options.map((option) => (
             <SortOption
@@ -96,7 +113,7 @@ export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseL
       </form>
 
       <div className="cities__places-list places__list tabs__content">
-        {filteredOffers.map((card) => (
+        {sortedOffers.map((card) => (
           <CardComponent
             key={card.id}
             card={card}

@@ -1,7 +1,7 @@
 import { cities } from '../mock/mocks';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeCity } from '../appSlice';
-import { AppState } from '../types';
+import { changeCity } from '../redux/citySlice';
+import { selectCurrentCityName } from '../redux/citySelectors';
 
 type LocationItem = {
   name: string;
@@ -63,7 +63,7 @@ function LocationItem(locationItem: LocationItem): JSX.Element {
 }
 
 export default function LocationListComponent(): JSX.Element {
-  const currentCity = useSelector((state: { app: AppState }) => state.app.name);
+  const currentCity = useSelector(selectCurrentCityName);
   const updatedLocationItems = locationItems.map((item) => ({
     ...item,
     isActive: item.name === currentCity

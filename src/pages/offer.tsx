@@ -12,7 +12,9 @@ export function OfferPage({ offers, activeCard, setActiveCard }: OfferPageProps)
   const { id } = useParams<{ id: string }>();
   const [reviews, setReviews] = useState<Review[]>(generateMockReviews(3));
 
-  const amsterdam = cities.find((city) => city.name === 'Amsterdam')!;
+  const amsterdam = {
+    city: cities.find((city) => city.name === 'Amsterdam')!
+  };
 
   const amsterdamOffers = offers.filter((offer) => offer.city.name === 'Amsterdam');
 

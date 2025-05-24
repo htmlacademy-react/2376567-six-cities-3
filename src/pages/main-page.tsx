@@ -4,12 +4,14 @@ import LocationListComponent from '../components/location-list';
 import PlacesComponent from '../components/places';
 import MapComponent from '../components/map';
 import { useSelector } from 'react-redux';
-import { AppState } from '../types';
+import { selectCity } from '../redux/citySelectors';
+import { selectOffers } from '../redux/offersSelectors';
 
-function MainPage({ placeCardsData, setActiveCard, activeCard }: MainPageProps): JSX.Element {
 
-  const city = useSelector((state: { app: AppState }) => state.app);
-  const cityOffers = placeCardsData.filter((offer) => offer.city.name === city.name);
+function MainPage({ setActiveCard, activeCard }: MainPageProps): JSX.Element {
+
+  const city = useSelector(selectCity);
+  const cityOffers = useSelector(selectOffers);
 
   const selectedOffer = activeCard
     ? cityOffers.find((offer) => offer.id === activeCard)

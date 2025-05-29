@@ -59,11 +59,11 @@ type FavoritesData = {
   locations: CardGroup[];
 };
 
-type CardProps = {
-  card: OfferCard;
-  onMouseEnter?: (id: string) => void;
-  onMouseLeave?: () => void;
-};
+// type CardProps = {
+//   card: OfferCard;
+//   onMouseEnter?: (id: string) => void;
+//   onMouseLeave?: () => void;
+// };
 
 type PlacesComponentProps = {
   placeCardsData: OfferCard[];
@@ -156,6 +156,13 @@ type ImageURL = string;
 
 type OffersState = OfferCard[];
 
+type CardProps = {
+  card: OfferCard;
+  onMouseEnter?: (id: string) => void;
+  onMouseLeave?: () => void;
+  cardType?: 'cities' | 'favorites' | 'near-places';
+};
+
 export type {
   MainPageProps,
   CardProps,
@@ -180,5 +187,5 @@ export type {
   GoodWithUUID,
   NearPlacesProps,
   CityState,
-  OffersState
+  OffersState,
 };

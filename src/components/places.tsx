@@ -61,26 +61,26 @@ export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseL
 
   const currentCity = useSelector(selectCurrentCityName);
 
-  const filteredOffers = placeCardsData.filter((offer) => offer.city.name === currentCity);
+  const currentOffers = placeCardsData.filter((offer) => offer.city.name === currentCity);
 
   const activeSortType = options.find((option) => option.isActive)?.value || 'Popular';
 
   let sortedOffers;
   switch (activeSortType) {
     case 'Price: low to high':
-      sortedOffers = [...filteredOffers].sort((a, b) => a.price - b.price);
+      sortedOffers = [...currentOffers].sort((a, b) => a.price - b.price);
       break;
     case 'Price: high to low':
-      sortedOffers = [...filteredOffers].sort((a, b) => b.price - a.price);
+      sortedOffers = [...currentOffers].sort((a, b) => b.price - a.price);
       break;
     case 'Top rated first':
-      sortedOffers = [...filteredOffers].sort((a, b) => b.rating - a.rating);
+      sortedOffers = [...currentOffers].sort((a, b) => b.rating - a.rating);
       break;
     default:
-      sortedOffers = filteredOffers;
+      sortedOffers = currentOffers;
   }
 
-  const numberOfPlaces = filteredOffers.length;
+  const numberOfPlaces = currentOffers.length;
 
   return sortedOffers.length > 0 ? (
     <section className="cities__places places">

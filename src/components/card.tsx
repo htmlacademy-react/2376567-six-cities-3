@@ -1,34 +1,32 @@
-import { CardProps } from '../types';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../const';
+import { CardProps } from '../types';
 
-export default function CardComponent({ card, onMouseEnter, onMouseLeave }: CardProps): JSX.Element {
+export default function CardComponent({
+  card,
+  onMouseEnter,
+  onMouseLeave,
+  cardType = 'cities'
+}: CardProps): JSX.Element {
   const {
+    id,
     isPremium,
-    images,
+    previewImage,
     price,
     isFavorite,
     rating,
     title,
-    type,
-    id
+    type
   } = card;
 
-  const handleMouseEnter = () => {
-    if (onMouseEnter) {
-      onMouseEnter(id);
-    }
-  };
+  const handleMouseEnter = () => onMouseEnter?.(id);
+  const handleMouseLeave = () => onMouseLeave?.();
 
-  const handleMouseLeave = () => {
-    if (onMouseLeave) {
-      onMouseLeave();
-    }
-  };
+  const ratingWidth = `${Math.round(rating) * 20}%`;
 
   return (
     <article
-      className="cities__card place-card"
+      className={`${cardType}__card place-card`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -37,14 +35,17 @@ export default function CardComponent({ card, onMouseEnter, onMouseLeave }: Card
           <span>Premium</span>
         </div>
       )}
-      <div className="cities__image-wrapper place-card__image-wrapper">
-        <Link to={`/offer/${id}`}>
+      <div className={`${cardType}__image-wrapper place-card__image-wrapper`}>
+        <Link to={`${AppRoute.Offer}/${id}`}>
           <img
             className="place-card__image"
-            src={images[0]}
-            width={260}
-            height={200}
-            alt="Place image"
+            src={previewImage}
+            width={cardType === 'favorites' ? 150 : 260}
+            height={cardType === 'favorites' ? 110 : 200}
+            alt={title}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = 'https://via.placeholder.com/260x200';
+            }}
           />
         </Link>
       </div>
@@ -55,7 +56,7 @@ export default function CardComponent({ card, onMouseEnter, onMouseLeave }: Card
             <span className="place-card__price-text">/&nbsp;night</span>
           </div>
           <button
-            className={`place-card__bookmark-button button ${isFavorite && 'place-card__bookmark-button--active'}`}
+            className={`place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''}`}
             type="button"
           >
             <svg className="place-card__bookmark-icon" width={18} height={19}>
@@ -68,16 +69,15 @@ export default function CardComponent({ card, onMouseEnter, onMouseLeave }: Card
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{ width: `${rating}%` }}></span>
+            <span style={{ width: ratingWidth }}></span>
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`${AppRoute.Offer}${id}`}>{title}</Link>
+          <Link to={`${AppRoute.Offer}/${id}`}>{title}</Link>
         </h2>
-        <p className="place-card__type">{type}</p>
+        <p className="place-card__type">{type.charAt(0).toUpperCase() + type.slice(1)}</p>
       </div>
     </article>
   );
 }
-

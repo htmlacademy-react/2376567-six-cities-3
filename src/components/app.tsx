@@ -10,20 +10,32 @@ import { OfferPage } from '../pages/offer';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { loadOffers } from '../redux/offersSlice';
-import { generateMockData } from '../mock/mocks';
-import { selectOffers } from '../redux/offersSelectors';
+import { fetchOffers } from '../redux/offersSlice';
+import { selectOffers, selectError, selectLoading } from '../redux/offersSelectors';
+import Spinner from './spinner/spinner';
+import { AppDispatch } from '../redux/store';
 
 function App(): JSX.Element {
 
-  const dispatch = useDispatch();
+  const dispatch : AppDispatch = useDispatch();
   useEffect(() => {
-    dispatch(loadOffers(generateMockData(10)));
+    dispatch(fetchOffers());
   },[dispatch]);
 
   const cityOffers = useSelector(selectOffers);
+  const isLoading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+
   const [activeCard, setActiveCard] = useState<string | null>(null);
   const isAuth = true;
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  if (error) {
+    return <div>Ошибка: {error}</div>;
+  }
 
   return (
     <BrowserRouter>

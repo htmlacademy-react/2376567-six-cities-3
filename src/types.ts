@@ -6,11 +6,6 @@ type Location = {
   zoom: number;
 };
 
-// type City = {
-//   name: string;
-//   location: Location;
-// };
-
 type City = {
   name: string;
   location: Location;
@@ -59,21 +54,11 @@ type FavoritesData = {
   locations: CardGroup[];
 };
 
-// type CardProps = {
-//   card: OfferCard;
-//   onMouseEnter?: (id: string) => void;
-//   onMouseLeave?: () => void;
-// };
-
 type PlacesComponentProps = {
   placeCardsData: OfferCard[];
   onMouseEnter?: (id: string) => void;
   onMouseLeave?: () => void;
 };
-
-// type AppScreenProps = {
-//   placeCardsData: OfferCard[];
-// };
 
 type MainPageProps = {
   placeCardsData: OfferCard[];

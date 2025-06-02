@@ -1,4 +1,67 @@
+import { FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AppRoute } from '../const';
+import { setAuthorizationStatus, setUserEmail } from '../redux/authSlice';
+import { AuthorizationStatus } from '../types';
+import { saveToken } from '../token';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectIsAuth } from '../redux/authSelectors';
+
 export function LoginPage(): JSX.Element {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isAuth = useSelector(selectIsAuth);
+
+  useEffect(() => {
+    if (isAuth) {
+      navigate(AppRoute.Main);
+    }
+  }, [isAuth, navigate]);
+
+  const validateEmail = (value: string): boolean => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(value);
+  };
+
+  const validatePassword = (value: string): boolean => /[a-zA-Z]/.test(value) && /[0-9]/.test(value);
+
+  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+
+    let isValid = true;
+
+    if (!email) {
+      setEmailError('Email is required');
+      isValid = false;
+    } else if (!validateEmail(email)) {
+      setEmailError('Please enter a valid email');
+      isValid = false;
+    } else {
+      setEmailError('');
+    }
+
+    if (!password) {
+      setPasswordError('Password is required');
+      isValid = false;
+    } else if (!validatePassword(password)) {
+      setPasswordError('Password must contain at least one letter and one number');
+      isValid = false;
+    } else {
+      setPasswordError('');
+    }
+
+    if (isValid) {
+      saveToken('fake-token');
+      dispatch(setAuthorizationStatus(AuthorizationStatus.AUTH));
+      dispatch(setUserEmail(email));
+      navigate(AppRoute.Main);
+    }
+  };
+
   return (
     <div className="page page--gray page--login">
       <header className="header">
@@ -17,26 +80,32 @@ export function LoginPage(): JSX.Element {
         <div className="page__login-container container">
           <section className="login">
             <h1 className="login__title">Sign in</h1>
-            <form className="login__form form" action="#" method="post">
+            <form className="login__form form" onSubmit={handleSubmit} noValidate>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
                 <input
-                  className="login__input form__input"
+                  className={`login__input form__input ${emailError ? 'login__input--error' : ''}`}
                   type="email"
                   name="email"
                   placeholder="Email"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
+                {emailError && <div className="login__error">{emailError}</div>}
               </div>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">Password</label>
                 <input
-                  className="login__input form__input"
+                  className={`login__input form__input ${passwordError ? 'login__input--error' : ''}`}
                   type="password"
                   name="password"
                   placeholder="Password"
                   required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
+                {passwordError && <div className="login__error">{passwordError}</div>}
               </div>
               <button className="login__submit form__submit button" type="submit">
                 Sign in

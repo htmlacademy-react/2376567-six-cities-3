@@ -1,3 +1,4 @@
+import { AxiosInstance } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 
 type Location = {
@@ -5,11 +6,6 @@ type Location = {
   longitude: number;
   zoom: number;
 };
-
-// type City = {
-//   name: string;
-//   location: Location;
-// };
 
 type City = {
   name: string;
@@ -59,21 +55,11 @@ type FavoritesData = {
   locations: CardGroup[];
 };
 
-// type CardProps = {
-//   card: OfferCard;
-//   onMouseEnter?: (id: string) => void;
-//   onMouseLeave?: () => void;
-// };
-
 type PlacesComponentProps = {
   placeCardsData: OfferCard[];
   onMouseEnter?: (id: string) => void;
   onMouseLeave?: () => void;
 };
-
-// type AppScreenProps = {
-//   placeCardsData: OfferCard[];
-// };
 
 type MainPageProps = {
   placeCardsData: OfferCard[];
@@ -163,6 +149,33 @@ type CardProps = {
   cardType?: 'cities' | 'favorites' | 'near-places';
 };
 
+type AuthData = {
+  email: string;
+  password: string;
+};
+
+type AuthInfo = {
+  token: string;
+};
+
+type AuthState = {
+  authorizationStatus: AuthorizationStatus;
+  error: string | null;
+  userEmail: string | null;
+}
+
+type AuthResponse = AuthInfo & { email: string };
+
+type ThunkConfig = {
+  extra: { api: AxiosInstance };
+};
+
+export enum AuthorizationStatus {
+  AUTH = 'AUTH',
+  NO_AUTH = 'NO_AUTH',
+  UNKNOWN = 'UNKNOWN',
+}
+
 export type {
   MainPageProps,
   CardProps,
@@ -188,4 +201,9 @@ export type {
   NearPlacesProps,
   CityState,
   OffersState,
+  AuthData,
+  AuthInfo,
+  AuthState,
+  AuthResponse,
+  ThunkConfig
 };

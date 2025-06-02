@@ -18,8 +18,14 @@ const initialState: OffersState = {
 export const fetchOffers = createAsyncThunk<OfferCard[], void, { extra: { api: AxiosInstance } }>(
   'offers/fetchAll',
   async (_, { extra: { api } }) => {
-    const response = await api.get<OfferCard[]>('/offers');
-    return response.data;
+    try {
+      const response = await api.get<OfferCard[]>('/offers');
+      return response.data;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+      throw error;
+    }
   }
 );
 

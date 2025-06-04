@@ -140,7 +140,15 @@ type ImageURL = string;
     city: City;
 }
 
-type OffersState = OfferCard[];
+type OffersState = {
+  data: OfferCard[];
+  currentOffer: OfferCard | null;
+  nearbyOffers: OfferCard[];
+  loading: boolean;
+  nearbyLoading: boolean;
+  error: string | null;
+  nearbyError: string | null;
+};
 
 type CardProps = {
   card: OfferCard;

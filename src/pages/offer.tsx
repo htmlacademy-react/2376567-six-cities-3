@@ -1,33 +1,55 @@
 import { useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { OfferDetails, Review, OfferPageProps, ImageWithUUID, GoodWithUUID } from '../types';
 import { ReviewsSection } from '../components/review';
 import { generateMockReviews } from '../mock/mocks';
 import { generateUUIDKey, generateTextKey } from '../utils';
 import MapComponent from '../components/map';
-import { cities } from '../mock/mocks';
 import NearPlacesComponent from '../components/near-places';
+import { useSelector } from 'react-redux';
+import { fetchNearbyOffers, fetchOfferById } from '../redux/offersSlice';
+import { RootState } from '../redux/store';
+import Spinner from '../components/spinner/spinner';
+import { useAppDispatch } from '../redux/store';
 
-export function OfferPage({ offers, activeCard, setActiveCard }: OfferPageProps): JSX.Element {
+export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.Element {
   const { id } = useParams<{ id: string }>();
   const [reviews, setReviews] = useState<Review[]>(generateMockReviews(3));
+  const dispatch = useAppDispatch();
 
-  const amsterdam = {
-    city: cities.find((city) => city.name === 'Amsterdam')!
-  };
+  const currentOffer = useSelector((state: RootState) => state.offers.currentOffer);
+  const nearbyOffers = useSelector((state: RootState) => state.offers.nearbyOffers);
+  const loading = useSelector((state: RootState) => state.offers.loading);
+  const error = useSelector((state: RootState) => state.offers.error);
 
-  const amsterdamOffers = offers.filter((offer) => offer.city.name === 'Amsterdam');
+  useEffect(() => {
+    if (id && (!currentOffer || currentOffer.id !== id)) {
+      dispatch(fetchOfferById(id));
+    }
+  }, [id, dispatch, currentOffer]);
+
+  useEffect(() => {
+    if (id && currentOffer?.id === id) {
+      dispatch(fetchNearbyOffers(id));
+    }
+  }, [id, dispatch, currentOffer?.id]);
+
 
   const selectedOffer = activeCard
-    ? amsterdamOffers.find((offer) => offer.id === activeCard)
+    ? [...nearbyOffers, currentOffer].find((offer) => offer?.id === activeCard)
     : null;
 
-  const offerCard = offers.find((offer) => offer.id === id);
 
-
-  if (!offerCard) {
+  if (loading) {
+    return <Spinner />;
+  }
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+  if (!currentOffer) {
     return <div>Offer not found</div>;
   }
+
 
   const handleReviewSubmit = (data: { rating: number; review: string }) => {
     const newReview: Review = {
@@ -45,14 +67,16 @@ export function OfferPage({ offers, activeCard, setActiveCard }: OfferPageProps)
   };
 
   const offer: OfferDetails = {
-    ...offerCard,
-    description: offerCard.description,
-    bedrooms: offerCard.bedrooms,
-    goods: offerCard.goods,
-    host: offerCard.host,
-    images: offerCard.images,
-    maxAdults: offerCard.maxAdults,
+    ...currentOffer,
+    description: currentOffer.description,
+    bedrooms: currentOffer.bedrooms,
+    goods: currentOffer.goods,
+    host: currentOffer.host,
+    images: currentOffer.images,
+    maxAdults: currentOffer.maxAdults,
   };
+
+  const city = offer.city;
 
   const imagesWithId: ImageWithUUID[] = offer.images.map((url): ImageWithUUID => ({
     url,
@@ -176,14 +200,14 @@ export function OfferPage({ offers, activeCard, setActiveCard }: OfferPageProps)
         </div>
         <section className="offer__map map">
           <MapComponent
-            city={amsterdam}
-            offers={amsterdamOffers}
+            city={{city}}
+            offers={nearbyOffers}
             selectedOffer={selectedOffer}
           />
         </section>
         <div className="container">
           <NearPlacesComponent
-            offers={amsterdamOffers.filter((amsterdamOffer) => amsterdamOffer.id !== id)}
+            offers={nearbyOffers.filter((nearbyoffer) => nearbyoffer.id !== id)}
             setActiveCard = {setActiveCard}
           />
         </div>

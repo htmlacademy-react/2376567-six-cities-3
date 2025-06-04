@@ -3,6 +3,7 @@ import cityReducer from './citySlice';
 import offersReducer from './offersSlice';
 import { createAPI } from '../api';
 import authReducer from './authSlice';
+import { useDispatch } from 'react-redux';
 
 export const api = createAPI();
 
@@ -22,3 +23,4 @@ export const store = configureStore({
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
+export const useAppDispatch = () => useDispatch<AppDispatch>();

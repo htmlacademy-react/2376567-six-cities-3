@@ -1,18 +1,17 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppRoute } from '../const';
-import { setAuthorizationStatus, setUserEmail } from '../redux/authSlice';
-import { AuthorizationStatus } from '../types';
-import { saveToken } from '../token';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectIsAuth } from '../redux/authSelectors';
+import { loginAction } from '../redux/authSlice';
+import { useAppDispatch } from '../redux/store';
 
 export function LoginPage(): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isAuth = useSelector(selectIsAuth);
 
@@ -29,7 +28,7 @@ export function LoginPage(): JSX.Element {
 
   const validatePassword = (value: string): boolean => /[a-zA-Z]/.test(value) && /[0-9]/.test(value);
 
-  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (evt: FormEvent<HTMLFormElement>):Promise<void> => {
     evt.preventDefault();
 
     let isValid = true;
@@ -55,10 +54,20 @@ export function LoginPage(): JSX.Element {
     }
 
     if (isValid) {
-      saveToken('fake-token');
-      dispatch(setAuthorizationStatus(AuthorizationStatus.AUTH));
-      dispatch(setUserEmail(email));
-      navigate(AppRoute.Main);
+      try {
+
+        const resultAction = await dispatch(loginAction({ email, password }));
+
+        if (loginAction.fulfilled.match(resultAction)) {
+          navigate(AppRoute.Main);
+        } else {
+          if (resultAction.payload) {
+            setEmailError((resultAction.payload as { error?: string }).error || 'Authorization failed');
+          }
+        }
+      } catch (error) {
+        setEmailError('Connection error');
+      }
     }
   };
 

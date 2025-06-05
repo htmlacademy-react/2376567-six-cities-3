@@ -1,26 +1,25 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { OfferDetails, Review, OfferPageProps, ImageWithUUID, GoodWithUUID } from '../types';
+import { useEffect } from 'react';
+import { OfferDetails, OfferPageProps, ImageWithUUID, GoodWithUUID } from '../types';
 import { ReviewsSection } from '../components/review';
-import { generateMockReviews } from '../mock/mocks';
 import { generateUUIDKey, generateTextKey } from '../utils';
 import MapComponent from '../components/map';
 import NearPlacesComponent from '../components/near-places';
 import { useSelector } from 'react-redux';
 import { fetchNearbyOffers, fetchOfferById } from '../redux/offersSlice';
-import { RootState } from '../redux/store';
 import Spinner from '../components/spinner/spinner';
 import { useAppDispatch } from '../redux/store';
+import NotFoundPage from './not-found-page';
+import { selectLoading, selectError, selectCurrentOffer, selectNearbyOffers } from '../redux/offersSelectors';
 
 export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.Element {
-  const { id } = useParams<{ id: string }>();
-  const [reviews, setReviews] = useState<Review[]>(generateMockReviews(3));
+  const { id } = useParams<{ id: string | undefined }>();
   const dispatch = useAppDispatch();
 
-  const currentOffer = useSelector((state: RootState) => state.offers.currentOffer);
-  const nearbyOffers = useSelector((state: RootState) => state.offers.nearbyOffers);
-  const loading = useSelector((state: RootState) => state.offers.loading);
-  const error = useSelector((state: RootState) => state.offers.error);
+  const currentOffer = useSelector(selectCurrentOffer);
+  const nearbyOffers = useSelector(selectNearbyOffers);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
 
   useEffect(() => {
     if (id && (!currentOffer || currentOffer.id !== id)) {
@@ -47,24 +46,8 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
     return <div>Error: {error}</div>;
   }
   if (!currentOffer) {
-    return <div>Offer not found</div>;
+    return <NotFoundPage/>;
   }
-
-
-  const handleReviewSubmit = (data: { rating: number; review: string }) => {
-    const newReview: Review = {
-      id: generateUUIDKey(),
-      date: new Date().toISOString(),
-      user: {
-        name: 'Current User',
-        avatarUrl: 'img/avatar-user.jpg',
-        isPro: false,
-      },
-      comment: data.review,
-      rating: data.rating,
-    };
-    setReviews([...reviews, newReview]);
-  };
 
   const offer: OfferDetails = {
     ...currentOffer,
@@ -192,10 +175,7 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
                 ))}
               </div>
             </div>
-            <ReviewsSection
-              reviews={reviews}
-              onReviewSubmit={handleReviewSubmit}
-            />
+            <ReviewsSection offerId={id} />
           </div>
         </div>
         <section className="offer__map map">

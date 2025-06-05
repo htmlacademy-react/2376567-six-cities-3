@@ -1,16 +1,19 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { OfferCard } from '../types';
+import { OfferCard, Review, OffersState } from '../types';
 import { AxiosInstance } from 'axios';
-import { OffersState } from '../types';
 
 const initialState: OffersState = {
   data: [],
   currentOffer: null,
   nearbyOffers: [],
+  reviews: [],
+  reviewsLoading: false,
+  reviewSubmitLoading: false,
+  reviewSubmitError: null,
   loading: false,
   nearbyLoading: false,
   error: null,
-  nearbyError: null
+  nearbyError:''
 };
 
 export const fetchOffers = createAsyncThunk<OfferCard[], void, { extra: { api: AxiosInstance } }>(
@@ -41,17 +44,34 @@ export const fetchOfferById = createAsyncThunk<OfferCard, string, { extra: { api
   }
 );
 
-export const fetchNearbyOffers = createAsyncThunk<OfferCard[], string, { extra: { api: AxiosInstance } }>(
-  'offers/fetchNearby',
-  async (offerId, { extra: { api } }) => {
-    try {
-      const response = await api.get<OfferCard[]>(`/offers/${offerId}/nearby`);
-      return response.data;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
-      throw error;
-    }
+export const fetchNearbyOffers = createAsyncThunk<OfferCard[], string, { extra: { api: AxiosInstance } }>('offers/fetchNearby', async (offerId, { extra: { api } }) => {
+  try {
+    const response = await api.get<OfferCard[]>(`/offers/${offerId}/nearby`);
+    return response.data;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(error);
+    throw error;
+  }
+}
+);
+
+export const fetchReviews = createAsyncThunk<Review[],string,{ extra: { api: AxiosInstance } }>('offers/fetchReviews', async (offerId, { extra: { api }}) => {
+  try {
+    const response = await api.get<Review[]>(`/comments/${offerId}`);
+    return response.data;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(error);
+    throw error;
+  }
+});
+
+export const submitReview = createAsyncThunk<Review, { offerId: string | undefined; rating: number; comment: string }, { extra: { api: AxiosInstance } }>(
+  'offers/submitReview',
+  async ({ offerId, rating, comment }, { extra: { api } }) => {
+    const response = await api.post<Review>(`/comments/${offerId}`, { rating, comment });
+    return response.data;
   }
 );
 
@@ -107,6 +127,28 @@ const offersSlice = createSlice({
       .addCase(fetchNearbyOffers.rejected, (state, action) => {
         state.nearbyLoading = false;
         state.nearbyError = action.payload as string || 'Failed to load nearby offers';
+      })
+      .addCase(fetchReviews.pending, (state) => {
+        state.reviewsLoading = true;
+      })
+      .addCase(fetchReviews.fulfilled, (state, action) => {
+        state.reviews = action.payload;
+        state.reviewsLoading = false;
+      })
+      .addCase(fetchReviews.rejected, (state) => {
+        state.reviewsLoading = false;
+      })
+      .addCase(submitReview.pending, (state) => {
+        state.reviewSubmitLoading = true;
+        state.reviewSubmitError = null;
+      })
+      .addCase(submitReview.fulfilled, (state, action) => {
+        state.reviews.unshift(action.payload);
+        state.reviewSubmitLoading = false;
+      })
+      .addCase(submitReview.rejected, (state, action) => {
+        state.reviewSubmitLoading = false;
+        state.reviewSubmitError = action.payload as string;
       });
   }
 });

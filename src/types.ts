@@ -7,11 +7,6 @@ type Location = {
   zoom: number;
 };
 
-type City = {
-  name: string;
-  location: Location;
-}
-
 type Host = {
   name: string;
   avatarUrl: string;
@@ -184,6 +179,18 @@ type ThunkConfig = {
   extra: { api: AxiosInstance };
 };
 
+type City = {
+  name: string;
+  location: Location;
+}
+
+type LocationItem = {
+  name: string;
+  isActive: boolean;
+};
+
+type LocationItemArray = LocationItem[];
+
 export enum AuthorizationStatus {
   AUTH = 'AUTH',
   NO_AUTH = 'NO_AUTH',
@@ -219,5 +226,7 @@ export type {
   AuthInfo,
   AuthState,
   AuthResponse,
-  ThunkConfig
+  ThunkConfig,
+  LocationItem,
+  LocationItemArray
 };

@@ -1,41 +1,10 @@
-import { cities } from '../mock/mocks';
+import { cities } from '../const';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeCity } from '../redux/citySlice';
 import { selectCurrentCityName } from '../redux/citySelectors';
+import type { LocationItem } from '../types';
+import { locationItems } from '../const';
 
-type LocationItem = {
-  name: string;
-  isActive: boolean;
-};
-
-type LocationItemArray = LocationItem[];
-
-const locationItems: LocationItemArray = [
-  {
-    name: 'Paris',
-    isActive: true
-  },
-  {
-    name: 'Cologne',
-    isActive: false
-  },
-  {
-    name: 'Brussels',
-    isActive: false
-  },
-  {
-    name: 'Amsterdam',
-    isActive: false
-  },
-  {
-    name: 'Hamburg',
-    isActive: false
-  },
-  {
-    name: 'Dusseldorf',
-    isActive: false
-  },
-];
 
 function LocationItem(locationItem: LocationItem): JSX.Element {
   const { name, isActive } = locationItem;

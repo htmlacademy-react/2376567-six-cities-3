@@ -11,6 +11,7 @@ import { selectOffers } from '../redux/offersSelectors';
 function MainPage({ setActiveCard, activeCard }: MainPageProps): JSX.Element {
 
   const city = useSelector(selectCity);
+
   const cityOffers = useSelector(selectOffers);
 
   const selectedOffer = activeCard

@@ -23,6 +23,21 @@ function App(): JSX.Element {
 
   const dispatch : AppDispatch = useDispatch();
 
+  const checkAuth = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      dispatch(setAuthorizationStatus(AuthorizationStatus.AUTH));
+    } else {
+      dispatch(setAuthorizationStatus(AuthorizationStatus.NO_AUTH));
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
   const cityOffers = useSelector(selectOffers);
   const isLoading = useSelector(selectLoading);
   const error = useSelector(selectError);

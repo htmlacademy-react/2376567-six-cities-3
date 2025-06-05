@@ -9,6 +9,11 @@ export default function useMap(mapRef: React.RefObject<HTMLElement>, { city }: C
   const isRenderedRef = useRef(false);
 
   useEffect(() => {
+
+    if (!city || !city.location) {
+      return;
+    }
+
     if (mapRef.current !== null && !isRenderedRef.current) {
       const instance = leaflet.map(mapRef.current, {
         center: {

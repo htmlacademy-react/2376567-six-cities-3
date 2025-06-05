@@ -20,6 +20,30 @@ export const loginAction = createAsyncThunk<AuthResponse, AuthData, ThunkConfig>
   }
 );
 
+export const registerAction = createAsyncThunk<
+  AuthResponse,
+  { email: string; password: string; name: string },
+  ThunkConfig
+>(
+  'auth/register',
+  async ({ email, password, name }, { extra: { api }, rejectWithValue }) => {
+    try {
+      const { data } = await api.post<AuthResponse>('/register', {
+        email,
+        password,
+        name
+      });
+      saveToken(data.token);
+      return data;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        return rejectWithValue(err.response?.data || { error: 'Registration failed' });
+      }
+      return rejectWithValue({ error: 'Unknown error' });
+    }
+  }
+);
+
 const initialState: AuthState = {
   authorizationStatus: AuthorizationStatus.UNKNOWN,
   error: null,
@@ -50,6 +74,15 @@ const authSlice = createSlice({
       .addCase(loginAction.rejected, (state, action) => {
         state.authorizationStatus = AuthorizationStatus.NO_AUTH;
         state.error = (action.payload as { error: string })?.error || 'Authorization failed';
+      })
+      .addCase(registerAction.fulfilled, (state, action) => {
+        state.authorizationStatus = AuthorizationStatus.AUTH;
+        state.userEmail = action.payload.email;
+        state.error = null;
+      })
+      .addCase(registerAction.rejected, (state, action) => {
+        state.authorizationStatus = AuthorizationStatus.NO_AUTH;
+        state.error = (action.payload as { error: string })?.error || 'Registration failed';
       });
   },
 });

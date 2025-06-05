@@ -85,13 +85,13 @@ type ActiveCardType = string | null;
 type Review = {
   id: string;
   date: string;
+  comment: string;
+  rating: number;
   user: {
     name: string;
     avatarUrl: string;
     isPro: boolean;
   };
-  comment: string;
-  rating: number;
 };
 
 type OfferPageProps = {
@@ -101,7 +101,9 @@ type OfferPageProps = {
 }
 
 type ReviewFormProps = {
-  onSubmit: (data: { rating: number; review: string }) => void;
+  onSubmit: (data: { rating: number; comment: string}) => void;
+  loading?: boolean;
+  error?: string | null;
 };
 
 type ReviewsSectionProps = {
@@ -140,7 +142,19 @@ type ImageURL = string;
     city: City;
 }
 
-type OffersState = OfferCard[];
+type OffersState = {
+  data: OfferCard[];
+  currentOffer: OfferCard | null;
+  nearbyOffers: OfferCard[];
+  reviews: Review[];
+  loading: boolean;
+  nearbyLoading: boolean;
+  reviewsLoading: boolean;
+  reviewSubmitLoading: boolean;
+  reviewSubmitError: string | null;
+  error: string | null;
+  nearbyError: string | null;
+};
 
 type CardProps = {
   card: OfferCard;

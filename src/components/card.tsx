@@ -1,6 +1,12 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../const';
-import { CardProps } from '../types';
+import { CardProps} from '../types';
+import FavoriteButton from './favorite-button';
+import { useAppDispatch } from '../redux/store';
+import { selectOffers } from '../redux/offers-selectors';
+import { useSelector } from 'react-redux';
+import { toggleFavorite } from '../redux/favorites-slice';
+import { selectFavorites } from '../redux/favorites-selectors';
 
 export default function CardComponent({
   card,
@@ -13,11 +19,25 @@ export default function CardComponent({
     isPremium,
     previewImage,
     price,
-    isFavorite,
     rating,
     title,
     type
   } = card;
+
+  const dispatch = useAppDispatch();
+  const offers = useSelector(selectOffers);
+  const favorites = useSelector(selectFavorites);
+
+  const currentCard = offers.find((o) => o.id === card.id) || card;
+  const isFavorite = favorites.some((fav) => fav.id === card.id) || currentCard.isFavorite;
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    dispatch(toggleFavorite({
+      offerId: currentCard.id,
+      status: currentCard.isFavorite ? 0 : 1
+    }));
+  };
 
   const handleMouseEnter = () => onMouseEnter?.(id);
   const handleMouseLeave = () => onMouseLeave?.();
@@ -55,17 +75,14 @@ export default function CardComponent({
             <b className="place-card__price-value">€{price}</b>
             <span className="place-card__price-text">/&nbsp;night</span>
           </div>
-          <button
-            className={`place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''}`}
-            type="button"
-          >
-            <svg className="place-card__bookmark-icon" width={18} height={19}>
-              <use xlinkHref="#icon-bookmark"></use>
-            </svg>
-            <span className="visually-hidden">
-              {isFavorite ? 'In bookmarks' : 'To bookmarks'}
-            </span>
-          </button>
+          <FavoriteButton
+            offerId={id}
+            isFavorite={isFavorite}
+            className={'place-card'}
+            width={cardType === 'favorites' ? 18 : 18}
+            height={cardType === 'favorites' ? 19 : 19}
+            onClick={handleFavoriteClick}
+          />
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">

@@ -2,12 +2,12 @@ import { FormEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppRoute } from '../const';
 import { useSelector } from 'react-redux';
-import { selectIsAuth } from '../redux/authSelectors';
-import { loginAction } from '../redux/authSlice';
+import { selectIsAuth } from '../redux/auth-selectors';
+import { loginAction } from '../redux/auth-slice';
 import { useAppDispatch } from '../redux/store';
 import { cities } from '../const';
 import { getRandomInt } from '../utils';
-import { changeCity } from '../redux/citySlice';
+import { changeCity } from '../redux/city-slice';
 import { City } from '../types';
 
 export function LoginPage(): JSX.Element {
@@ -101,7 +101,7 @@ export function LoginPage(): JSX.Element {
         <div className="page__login-container container">
           <section className="login">
             <h1 className="login__title">Sign in</h1>
-            <form className="login__form form" onSubmit={void ((evt:FormEvent<HTMLFormElement>) => handleSubmit(evt))} noValidate>
+            <form className="login__form form" onSubmit={(evt) => void handleSubmit(evt)} noValidate>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
                 <input

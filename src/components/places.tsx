@@ -2,7 +2,7 @@ import CardComponent from './card';
 import { PlacesComponentProps } from '../types';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectCurrentCityName } from '../redux/citySelectors';
+import { selectCurrentCityName } from '../redux/city-selectors';
 
 type SortOption = {
   value: string;

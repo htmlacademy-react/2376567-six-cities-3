@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { selectIsAuth, selectUserEmail } from '../redux/authSelectors';
-import { setAuthorizationStatus } from '../redux/authSlice';
+import { selectIsAuth, selectUserEmail } from '../redux/auth-selectors';
+import { selectFavoritesCount } from '../redux/favorites-selectors';
+import { setAuthorizationStatus } from '../redux/auth-slice';
 import { dropToken } from '../token';
 import { AuthorizationStatus } from '../types';
 import { Link } from 'react-router-dom';
@@ -9,6 +10,7 @@ import { AppRoute } from '../const';
 export default function NavigationComponent(): JSX.Element {
   const isAuth = useSelector(selectIsAuth);
   const userEmail = useSelector(selectUserEmail);
+  const favoritesCount = useSelector(selectFavoritesCount);
   const dispatch = useDispatch();
 
   const handleSignOut = () => {
@@ -25,7 +27,7 @@ export default function NavigationComponent(): JSX.Element {
               <Link className="header__nav-link header__nav-link--profile" to={AppRoute.Favorites}>
                 <div className="header__avatar-wrapper user__avatar-wrapper"></div>
                 <span className="header__user-name user__name">{userEmail}</span>
-                <span className="header__favorite-count">0</span>
+                <span className="header__favorite-count">{favoritesCount}</span>
               </Link>
             </li>
             <li className="header__nav-item">

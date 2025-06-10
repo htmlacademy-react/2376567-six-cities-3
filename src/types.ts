@@ -71,7 +71,6 @@ type FavoritesPageProps = {
 };
 
 type PrivateRouteProps = {
-  isAuth: boolean;
   element: JSX.Element;
 };
 
@@ -191,6 +190,15 @@ type LocationItem = {
 
 type LocationItemArray = LocationItem[];
 
+type FavoriteButtonProps = {
+  offerId: string;
+  isFavorite: boolean;
+  className?: string;
+  width?: number;
+  height?: number;
+  onClick?: (e: React.MouseEvent) => void;
+};
+
 export enum AuthorizationStatus {
   AUTH = 'AUTH',
   NO_AUTH = 'NO_AUTH',
@@ -228,5 +236,6 @@ export type {
   AuthResponse,
   ThunkConfig,
   LocationItem,
-  LocationItemArray
+  LocationItemArray,
+  FavoriteButtonProps
 };

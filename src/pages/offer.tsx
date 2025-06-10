@@ -6,12 +6,15 @@ import { generateUUIDKey, generateTextKey } from '../utils';
 import MapComponent from '../components/map';
 import NearPlacesComponent from '../components/near-places';
 import { useSelector } from 'react-redux';
-import { fetchNearbyOffers, fetchOfferById } from '../redux/offersSlice';
+import { fetchNearbyOffers, fetchOfferById } from '../redux/offers-slice';
 import Spinner from '../components/spinner/spinner';
 import { useAppDispatch } from '../redux/store';
 import NotFoundPage from './not-found-page';
-import { selectLoading, selectError, selectCurrentOffer, selectNearbyOffers } from '../redux/offersSelectors';
+import { selectLoading, selectError, selectCurrentOffer, selectNearbyOffers } from '../redux/offers-selectors';
 import HeaderComponent from '../components/header';
+import { toggleFavorite } from '../redux/favorites-slice';
+import { selectFavorites } from '../redux/favorites-selectors';
+import FavoriteButton from '../components/favorite-button';
 
 export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.Element {
   const { id } = useParams<{ id: string | undefined }>();
@@ -21,6 +24,7 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
   const nearbyOffers = useSelector(selectNearbyOffers);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
+  const favorites = useSelector(selectFavorites);
 
   useEffect(() => {
     if (id && (!currentOffer || currentOffer.id !== id)) {
@@ -34,11 +38,9 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
     }
   }, [id, dispatch, currentOffer?.id]);
 
-
   const selectedOffer = activeCard
     ? [...nearbyOffers, currentOffer].find((offer) => offer?.id === activeCard)
     : null;
-
 
   if (loading) {
     return <Spinner />;
@@ -49,6 +51,16 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
   if (!currentOffer) {
     return <NotFoundPage/>;
   }
+
+  const isFavorite = favorites.some((favorite) => favorite.id === currentOffer.id) || currentOffer.isFavorite;
+
+  const handleFavoriteClick = (evt: React.MouseEvent) => {
+    evt.preventDefault();
+    dispatch(toggleFavorite({
+      offerId: currentOffer.id,
+      status: isFavorite ? 0 : 1
+    }));
+  };
 
   const offer: OfferDetails = {
     ...currentOffer,
@@ -71,6 +83,9 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
     goodItem,
     id: generateUUIDKey(),
   }));
+
+  const nearestOffers = nearbyOffers.slice(0, 3); // Берем только 3 ближайших
+  const mapOffers = currentOffer ? [currentOffer, ...nearestOffers] : nearestOffers;
 
   return (
     <>
@@ -99,17 +114,14 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
                 <h1 className="offer__name">
                   {offer.title}
                 </h1>
-                <button
-                  className={`offer__bookmark-button button ${offer.isFavorite ? 'offer__bookmark-button--active' : ''}`}
-                  type="button"
-                >
-                  <svg className="offer__bookmark-icon" width="31" height="33">
-                    <use xlinkHref="#icon-bookmark"></use>
-                  </svg>
-                  <span className="visually-hidden">
-                    {offer.isFavorite ? 'In bookmarks' : 'To bookmarks'}
-                  </span>
-                </button>
+                <FavoriteButton
+                  offerId={currentOffer.id}
+                  isFavorite={isFavorite}
+                  className="offer"
+                  width={31}
+                  height={33}
+                  onClick={handleFavoriteClick}
+                />
               </div>
 
               <div className="offer__rating rating">
@@ -184,13 +196,13 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
           <section className="offer__map map">
             <MapComponent
               city={{city}}
-              offers={nearbyOffers}
+              offers={mapOffers}
               selectedOffer={selectedOffer}
             />
           </section>
           <div className="container">
             <NearPlacesComponent
-              offers={nearbyOffers.filter((nearbyoffer) => nearbyoffer.id !== id)}
+              offers={nearestOffers.filter((nearbyoffer) => nearbyoffer.id !== id)}
               setActiveCard = {setActiveCard}
             />
           </div>

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthData, AuthInfo, AuthResponse, ThunkConfig } from '../types';
-import { saveToken } from '../token';
+import { dropToken, saveToken } from '../token';
 import { AuthorizationStatus, AuthState } from '../types';
 import axios from 'axios';
 
@@ -63,6 +63,11 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    logout: (state) => {
+      state.authorizationStatus = AuthorizationStatus.NO_AUTH;
+      state.userEmail = null;
+      dropToken();
+    }
   },
   extraReducers: (builder) => {
     builder

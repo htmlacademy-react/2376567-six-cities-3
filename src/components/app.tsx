@@ -1,22 +1,21 @@
 import { AppRoute } from '../const';
-import { FavoritesPage } from '../pages/favorites';
+import FavoritesPage from '../pages/favorites';
 import { LoginPage } from '../pages/login-page';
 import MainPage from '../pages/main-page';
 import NotFoundPage from '../pages/not-found-page';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { groupByCity } from '../utils';
 import PrivateRoute from './private-route';
 import { OfferPage } from '../pages/offer';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { fetchOffers } from '../redux/offersSlice';
-import { selectOffers, selectError, selectLoading } from '../redux/offersSelectors';
+import { fetchOffers } from '../redux/offers-slice';
+import { selectOffers, selectError, selectLoading } from '../redux/offers-selectors';
 import Spinner from './spinner/spinner';
 import { AppDispatch } from '../redux/store';
 import { AuthorizationStatus } from '../types';
-import { setAuthorizationStatus } from '../redux/authSlice';
-import { selectIsAuth } from '../redux/authSelectors';
+import { setAuthorizationStatus } from '../redux/auth-slice';
+import { selectIsAuth } from '../redux/auth-selectors';
 import { getToken } from '../token';
 
 function App(): JSX.Element {
@@ -73,7 +72,7 @@ function App(): JSX.Element {
           element={<OfferPage offers={cityOffers} activeCard={activeCard} setActiveCard={setActiveCard}/>}
         />
         <Route path={AppRoute.Favorites} element={
-          <PrivateRoute element={<FavoritesPage data={groupByCity(cityOffers)}/>}/>
+          <PrivateRoute element={<FavoritesPage />}/>
         }
         />
         <Route path={AppRoute.Wildcard} element={<NotFoundPage/>}/>

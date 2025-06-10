@@ -4,8 +4,8 @@ import LocationListComponent from '../components/location-list';
 import PlacesComponent from '../components/places';
 import MapComponent from '../components/map';
 import { useSelector } from 'react-redux';
-import { selectCity } from '../redux/citySelectors';
-import { selectOffers } from '../redux/offersSelectors';
+import { selectCity } from '../redux/city-selectors';
+import { selectOffers } from '../redux/offers-selectors';
 
 
 function MainPage({ setActiveCard, activeCard }: MainPageProps): JSX.Element {

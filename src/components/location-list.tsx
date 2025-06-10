@@ -1,7 +1,7 @@
 import { cities } from '../const';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeCity } from '../redux/citySlice';
-import { selectCurrentCityName } from '../redux/citySelectors';
+import { changeCity } from '../redux/city-slice';
+import { selectCurrentCityName } from '../redux/city-selectors';
 import type { LocationItem } from '../types';
 import { locationItems } from '../const';
 

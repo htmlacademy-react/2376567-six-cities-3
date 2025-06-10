@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import cityReducer from './citySlice';
-import offersReducer from './offersSlice';
+import cityReducer from './city-slice';
+import offersReducer from './offers-slice';
 import { createAPI } from '../api';
-import authReducer from './authSlice';
+import authReducer from './auth-slice';
 import { useDispatch } from 'react-redux';
+import favoritesReducer from './favorites-slice';
 
 export const api = createAPI();
 
@@ -12,6 +13,7 @@ export const store = configureStore({
     city: cityReducer,
     offers: offersReducer,
     auth: authReducer,
+    favorites: favoritesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

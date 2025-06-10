@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { ReviewForm } from './review-form';
-import { fetchReviews, submitReview } from '../redux/offersSlice';
+import { fetchReviews, submitReview } from '../redux/offers-slice';
 import Spinner from '../components/spinner/spinner';
 import { useEffect } from 'react';
 import { AuthorizationStatus } from '../types';
@@ -11,7 +11,7 @@ import {
   selectReviewsLoading,
   selectReviewSubmitLoading,
   selectReviewSubmitError
-} from '../redux/reviewSelectors';
+} from '../redux/review-selectors';
 
 export function ReviewsSection({ offerId }: { offerId: string | undefined }) {
   const dispatch = useAppDispatch();

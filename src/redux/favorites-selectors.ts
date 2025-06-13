@@ -1,6 +1,24 @@
+import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from './store';
 
-export const selectFavorites = (state: RootState) => state.favorites.data;
-export const selectFavoritesCount = (state: RootState) => state.favorites.count;
-export const selectFavoritesLoading = (state: RootState) => state.favorites.loading;
-export const selectFavoritesError = (state: RootState) => state.favorites.error;
+const selectFavoritesState = (state: RootState) => state.favorites;
+
+export const selectFavorites = createSelector(
+  selectFavoritesState,
+  (favorites) => favorites.data
+);
+
+export const selectFavoritesCount = createSelector(
+  selectFavoritesState,
+  (favorites) => favorites.count
+);
+
+export const selectFavoritesLoading = createSelector(
+  selectFavoritesState,
+  (favorites) => favorites.loading
+);
+
+export const selectFavoritesError = createSelector(
+  selectFavoritesState,
+  (favorites) => favorites.error
+);

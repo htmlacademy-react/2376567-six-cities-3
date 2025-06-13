@@ -7,8 +7,9 @@ import { selectOffers } from '../redux/offers-selectors';
 import { useSelector } from 'react-redux';
 import { toggleFavorite } from '../redux/favorites-slice';
 import { selectFavorites } from '../redux/favorites-selectors';
+import { memo, useCallback } from 'react';
 
-export default function CardComponent({
+function CardComponent({
   card,
   onMouseEnter,
   onMouseLeave,
@@ -31,16 +32,16 @@ export default function CardComponent({
   const currentCard = offers.find((o) => o.id === card.id) || card;
   const isFavorite = favorites.some((fav) => fav.id === card.id) || currentCard.isFavorite;
 
-  const handleFavoriteClick = (e: React.MouseEvent) => {
+  const handleFavoriteClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     dispatch(toggleFavorite({
       offerId: currentCard.id,
       status: currentCard.isFavorite ? 0 : 1
     }));
-  };
+  }, [currentCard.id, currentCard.isFavorite, dispatch]);
 
-  const handleMouseEnter = () => onMouseEnter?.(id);
-  const handleMouseLeave = () => onMouseLeave?.();
+  const handleMouseEnter = useCallback(() => onMouseEnter?.(id), [onMouseEnter, id]);
+  const handleMouseLeave = useCallback(() => onMouseLeave?.(), [onMouseLeave]);
 
   const ratingWidth = `${Math.round(rating) * 20}%`;
 
@@ -98,3 +99,5 @@ export default function CardComponent({
     </article>
   );
 }
+
+export default memo(CardComponent);

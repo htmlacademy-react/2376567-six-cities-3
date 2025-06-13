@@ -4,9 +4,9 @@ import { changeCity } from '../redux/city-slice';
 import { selectCurrentCityName } from '../redux/city-selectors';
 import type { LocationItem } from '../types';
 import { locationItems } from '../const';
+import { memo } from 'react';
 
-
-function LocationItem(locationItem: LocationItem): JSX.Element {
+const LocationItemComponent = memo(({ locationItem }: { locationItem: LocationItem }): JSX.Element => {
   const { name, isActive } = locationItem;
   const dispatch = useDispatch();
 
@@ -29,7 +29,9 @@ function LocationItem(locationItem: LocationItem): JSX.Element {
       </a>
     </li>
   );
-}
+});
+
+LocationItemComponent.displayName = 'LocationItem';
 
 export default function LocationListComponent(): JSX.Element {
   const currentCity = useSelector(selectCurrentCityName);
@@ -42,7 +44,7 @@ export default function LocationListComponent(): JSX.Element {
     <div>
       <section className="locations container">
         <ul className="locations__list tabs__list">
-          {updatedLocationItems.map((item) => LocationItem(item))}
+          {updatedLocationItems.map((item) => <LocationItemComponent key={item.name} locationItem={item} />)}
         </ul>
       </section>
     </div>

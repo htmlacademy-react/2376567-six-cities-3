@@ -84,7 +84,7 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
     id: generateUUIDKey(),
   }));
 
-  const nearestOffers = nearbyOffers.slice(0, 3); // Берем только 3 ближайших
+  const nearestOffers = nearbyOffers.slice(0, 3);
   const mapOffers = currentOffer ? [currentOffer, ...nearestOffers] : nearestOffers;
 
   return (

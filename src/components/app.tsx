@@ -1,33 +1,67 @@
 import { AppRoute } from '../const';
-import { FavoritesPage } from '../pages/favorites';
+import FavoritesPage from '../pages/favorites';
 import { LoginPage } from '../pages/login-page';
 import MainPage from '../pages/main-page';
 import NotFoundPage from '../pages/not-found-page';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { groupByCity } from '../utils';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import PrivateRoute from './private-route';
 import { OfferPage } from '../pages/offer';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { fetchOffers } from '../redux/offersSlice';
-import { selectOffers, selectError, selectLoading } from '../redux/offersSelectors';
+import { fetchOffers } from '../redux/offers-slice';
+import { selectOffers, selectError, selectLoading } from '../redux/offers-selectors';
 import Spinner from './spinner/spinner';
-import { AppDispatch } from '../redux/store';
+import { api, AppDispatch } from '../redux/store';
+import { AuthorizationStatus } from '../types';
+import { clearAuth, setAuthData, setAuthorizationStatus } from '../redux/auth-slice';
+import { selectIsAuth } from '../redux/auth-selectors';
+import { dropToken, getToken } from '../token';
 
 function App(): JSX.Element {
 
   const dispatch : AppDispatch = useDispatch();
+
+  function initializeTestAuth() {
+    if (typeof window !== 'undefined' && 'Cypress' in window) {
+      localStorage.setItem('token', 'test-token-123');
+    }
+  }
+
   useEffect(() => {
-    dispatch(fetchOffers());
-  },[dispatch]);
+    initializeTestAuth();
+    const token = getToken();
+
+    if (token) {
+      api.get<{ email: string }>('/login')
+        .then((response) => {
+          dispatch(setAuthData({
+            status: AuthorizationStatus.AUTH,
+            email: response.data.email,
+          }));
+        })
+        .catch(() => {
+          dispatch(clearAuth());
+          dropToken();
+        });
+    } else {
+      dispatch(setAuthData({ status: AuthorizationStatus.NO_AUTH }));
+    }
+  }, [dispatch]);
 
   const cityOffers = useSelector(selectOffers);
   const isLoading = useSelector(selectLoading);
   const error = useSelector(selectError);
 
   const [activeCard, setActiveCard] = useState<string | null>(null);
-  const isAuth = true;
+  const isAuth = useSelector(selectIsAuth);
+
+  useEffect(() => {
+    dispatch(fetchOffers());
+
+    const token = getToken();
+    dispatch(setAuthorizationStatus(token ? AuthorizationStatus.AUTH : AuthorizationStatus.NO_AUTH));
+  }, [dispatch]);
 
   if (isLoading) {
     return <Spinner />;
@@ -41,13 +75,16 @@ function App(): JSX.Element {
     <BrowserRouter>
       <Routes>
         <Route path={AppRoute.Main} element={<MainPage placeCardsData={cityOffers} activeCard={activeCard} setActiveCard={setActiveCard}/>}/>
-        <Route path={AppRoute.Login} element={<LoginPage/>}/>
+        <Route
+          path={AppRoute.Login}
+          element={isAuth ? <Navigate to={AppRoute.Main} /> : <LoginPage />}
+        />
         <Route
           path={`${AppRoute.Offer}:id`}
-          element={<OfferPage offers={cityOffers} activeCard={activeCard} setActiveCard = {setActiveCard}/>}
+          element={<OfferPage offers={cityOffers} activeCard={activeCard} setActiveCard={setActiveCard}/>}
         />
         <Route path={AppRoute.Favorites} element={
-          <PrivateRoute isAuth={isAuth} element={<FavoritesPage data={groupByCity(cityOffers)}/>}/>
+          <PrivateRoute element={<FavoritesPage />}/>
         }
         />
         <Route path={AppRoute.Wildcard} element={<NotFoundPage/>}/>

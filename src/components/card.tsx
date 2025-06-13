@@ -1,8 +1,15 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../const';
-import { CardProps } from '../types';
+import { CardProps} from '../types';
+import FavoriteButton from './favorite-button';
+import { useAppDispatch } from '../redux/store';
+import { selectOffers } from '../redux/offers-selectors';
+import { useSelector } from 'react-redux';
+import { toggleFavorite } from '../redux/favorites-slice';
+import { selectFavorites } from '../redux/favorites-selectors';
+import { memo, useCallback } from 'react';
 
-export default function CardComponent({
+function CardComponent({
   card,
   onMouseEnter,
   onMouseLeave,
@@ -13,14 +20,28 @@ export default function CardComponent({
     isPremium,
     previewImage,
     price,
-    isFavorite,
     rating,
     title,
     type
   } = card;
 
-  const handleMouseEnter = () => onMouseEnter?.(id);
-  const handleMouseLeave = () => onMouseLeave?.();
+  const dispatch = useAppDispatch();
+  const offers = useSelector(selectOffers);
+  const favorites = useSelector(selectFavorites);
+
+  const currentCard = offers.find((o) => o.id === card.id) || card;
+  const isFavorite = favorites.some((fav) => fav.id === card.id) || currentCard.isFavorite;
+
+  const handleFavoriteClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    dispatch(toggleFavorite({
+      offerId: currentCard.id,
+      status: currentCard.isFavorite ? 0 : 1
+    }));
+  }, [currentCard.id, currentCard.isFavorite, dispatch]);
+
+  const handleMouseEnter = useCallback(() => onMouseEnter?.(id), [onMouseEnter, id]);
+  const handleMouseLeave = useCallback(() => onMouseLeave?.(), [onMouseLeave]);
 
   const ratingWidth = `${Math.round(rating) * 20}%`;
 
@@ -36,7 +57,7 @@ export default function CardComponent({
         </div>
       )}
       <div className={`${cardType}__image-wrapper place-card__image-wrapper`}>
-        <Link to={`${AppRoute.Offer}/${id}`}>
+        <Link to={`${AppRoute.Offer}${id}`}>
           <img
             className="place-card__image"
             src={previewImage}
@@ -55,17 +76,14 @@ export default function CardComponent({
             <b className="place-card__price-value">€{price}</b>
             <span className="place-card__price-text">/&nbsp;night</span>
           </div>
-          <button
-            className={`place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''}`}
-            type="button"
-          >
-            <svg className="place-card__bookmark-icon" width={18} height={19}>
-              <use xlinkHref="#icon-bookmark"></use>
-            </svg>
-            <span className="visually-hidden">
-              {isFavorite ? 'In bookmarks' : 'To bookmarks'}
-            </span>
-          </button>
+          <FavoriteButton
+            offerId={id}
+            isFavorite={isFavorite}
+            className={'place-card'}
+            width={cardType === 'favorites' ? 18 : 18}
+            height={cardType === 'favorites' ? 19 : 19}
+            onClick={handleFavoriteClick}
+          />
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
@@ -74,10 +92,12 @@ export default function CardComponent({
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`${AppRoute.Offer}/${id}`}>{title}</Link>
+          <Link to={`${AppRoute.Offer}${id}`}>{title}</Link>
         </h2>
         <p className="place-card__type">{type.charAt(0).toUpperCase() + type.slice(1)}</p>
       </div>
     </article>
   );
 }
+
+export default memo(CardComponent);

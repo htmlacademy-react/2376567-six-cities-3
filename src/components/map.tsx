@@ -6,10 +6,14 @@ import { URL_MARKER } from '../const';
 import { MapProps } from '../types';
 
 export default function MapComponent({ city, offers, selectedOffer }: MapProps) {
+
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
   useEffect(() => {
+    if (!map || !offers || !Array.isArray(offers)) {
+      return;
+    }
 
     const defaultCustomIcon = leaflet.icon({
       iconUrl: URL_MARKER.default,

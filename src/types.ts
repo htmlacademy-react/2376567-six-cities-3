@@ -1,3 +1,4 @@
+import { AxiosInstance } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 
 type Location = {
@@ -5,16 +6,6 @@ type Location = {
   longitude: number;
   zoom: number;
 };
-
-// type City = {
-//   name: string;
-//   location: Location;
-// };
-
-type City = {
-  name: string;
-  location: Location;
-}
 
 type Host = {
   name: string;
@@ -59,21 +50,11 @@ type FavoritesData = {
   locations: CardGroup[];
 };
 
-// type CardProps = {
-//   card: OfferCard;
-//   onMouseEnter?: (id: string) => void;
-//   onMouseLeave?: () => void;
-// };
-
 type PlacesComponentProps = {
   placeCardsData: OfferCard[];
   onMouseEnter?: (id: string) => void;
   onMouseLeave?: () => void;
 };
-
-// type AppScreenProps = {
-//   placeCardsData: OfferCard[];
-// };
 
 type MainPageProps = {
   placeCardsData: OfferCard[];
@@ -90,7 +71,6 @@ type FavoritesPageProps = {
 };
 
 type PrivateRouteProps = {
-  isAuth: boolean;
   element: JSX.Element;
 };
 
@@ -99,13 +79,13 @@ type ActiveCardType = string | null;
 type Review = {
   id: string;
   date: string;
+  comment: string;
+  rating: number;
   user: {
     name: string;
     avatarUrl: string;
     isPro: boolean;
   };
-  comment: string;
-  rating: number;
 };
 
 type OfferPageProps = {
@@ -115,7 +95,9 @@ type OfferPageProps = {
 }
 
 type ReviewFormProps = {
-  onSubmit: (data: { rating: number; review: string }) => void;
+  onSubmit: (data: { rating: number; comment: string}) => void;
+  loading?: boolean;
+  error?: string | null;
 };
 
 type ReviewsSectionProps = {
@@ -154,7 +136,19 @@ type ImageURL = string;
     city: City;
 }
 
-type OffersState = OfferCard[];
+type OffersState = {
+  data: OfferCard[];
+  currentOffer: OfferCard | null;
+  nearbyOffers: OfferCard[];
+  reviews: Review[];
+  loading: boolean;
+  nearbyLoading: boolean;
+  reviewsLoading: boolean;
+  reviewSubmitLoading: boolean;
+  reviewSubmitError: string | null;
+  error: string | null;
+  nearbyError: string | null;
+};
 
 type CardProps = {
   card: OfferCard;
@@ -162,6 +156,54 @@ type CardProps = {
   onMouseLeave?: () => void;
   cardType?: 'cities' | 'favorites' | 'near-places';
 };
+
+type AuthData = {
+  email?: string;
+  password: string;
+};
+
+type AuthInfo = {
+  token: string;
+};
+
+type AuthState = {
+  authorizationStatus: AuthorizationStatus;
+  error: string | null;
+  userEmail: string | null;
+}
+
+type AuthResponse = AuthInfo & { email: string };
+
+type ThunkConfig = {
+  extra: { api: AxiosInstance };
+};
+
+type City = {
+  name: string;
+  location: Location;
+}
+
+type LocationItem = {
+  name: string;
+  isActive: boolean;
+};
+
+type LocationItemArray = LocationItem[];
+
+type FavoriteButtonProps = {
+  offerId: string;
+  isFavorite: boolean;
+  className?: string;
+  width?: number;
+  height?: number;
+  onClick?: (e: React.MouseEvent) => void;
+};
+
+export enum AuthorizationStatus {
+  AUTH = 'AUTH',
+  NO_AUTH = 'NO_AUTH',
+  UNKNOWN = 'UNKNOWN',
+}
 
 export type {
   MainPageProps,
@@ -188,4 +230,12 @@ export type {
   NearPlacesProps,
   CityState,
   OffersState,
+  AuthData,
+  AuthInfo,
+  AuthState,
+  AuthResponse,
+  ThunkConfig,
+  LocationItem,
+  LocationItemArray,
+  FavoriteButtonProps
 };

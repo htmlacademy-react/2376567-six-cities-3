@@ -3,12 +3,12 @@ import { AppRoute } from '../const';
 import { NearPlacesProps } from '../types';
 
 export default function NearPlacesComponent({ offers, setActiveCard }: NearPlacesProps): JSX.Element {
-
+  const nearestOffers = offers.slice(0, 3);
   return (
     <section className="near-places places">
       <h2 className="near-places__title">Other places in the neighbourhood</h2>
       <div className="near-places__list places__list">
-        {offers.map((offer) => (
+        {nearestOffers.map((offer) => (
           <article
             key={offer.id}
             className="near-places__card place-card"

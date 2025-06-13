@@ -17,7 +17,13 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSubmit(reviewData);
+    if (reviewData.review.length < 50 || reviewData.review.length > 300) {
+      return;
+    }
+    onSubmit({
+      rating: reviewData.rating,
+      comment: reviewData.review
+    });
     setReviewData({ rating: 0, review: '' });
   };
 

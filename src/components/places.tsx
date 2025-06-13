@@ -1,8 +1,9 @@
 import CardComponent from './card';
 import { PlacesComponentProps } from '../types';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectCurrentCityName } from '../redux/citySelectors';
+import { selectCurrentCityName } from '../redux/city-selectors';
+import EmptyMain from './empty-main';
 
 type SortOption = {
   value: string;
@@ -49,7 +50,7 @@ export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseL
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [options, setOptions] = useState<SortOptions>(initialSortOptions);
 
-  const handleOptionClick = (clickedValue: string) => {
+  const handleOptionClick = useCallback((clickedValue: string) => {
     setOptions((prevOptions) =>
       prevOptions.map((option) => ({
         ...option,
@@ -57,28 +58,29 @@ export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseL
       }))
     );
     setIsSortOpen(false);
-  };
+  }, []);
 
   const currentCity = useSelector(selectCurrentCityName);
 
-  const currentOffers = placeCardsData.filter((offer) => offer.city.name === currentCity);
+  const currentOffers = useMemo(() =>
+    placeCardsData.filter((offer) => offer.city.name === currentCity),
+  [placeCardsData, currentCity]
+  );
 
   const activeSortType = options.find((option) => option.isActive)?.value || 'Popular';
 
-  let sortedOffers;
-  switch (activeSortType) {
-    case 'Price: low to high':
-      sortedOffers = [...currentOffers].sort((a, b) => a.price - b.price);
-      break;
-    case 'Price: high to low':
-      sortedOffers = [...currentOffers].sort((a, b) => b.price - a.price);
-      break;
-    case 'Top rated first':
-      sortedOffers = [...currentOffers].sort((a, b) => b.rating - a.rating);
-      break;
-    default:
-      sortedOffers = currentOffers;
-  }
+  const sortedOffers = useMemo(() => {
+    switch (activeSortType) {
+      case 'Price: low to high':
+        return [...currentOffers].sort((a, b) => a.price - b.price);
+      case 'Price: high to low':
+        return [...currentOffers].sort((a, b) => b.price - a.price);
+      case 'Top rated first':
+        return [...currentOffers].sort((a, b) => b.rating - a.rating);
+      default:
+        return currentOffers;
+    }
+  }, [currentOffers, activeSortType]);
 
   const numberOfPlaces = currentOffers.length;
 
@@ -86,7 +88,7 @@ export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseL
     <section className="cities__places places">
       <h2 className="visually-hidden">Places</h2>
       <b className="places__found">
-        {numberOfPlaces} places to stay in {currentCity}
+        {numberOfPlaces} {sortedOffers.length === 1 ? 'place' : 'places'} to stay in {currentCity}
       </b>
 
       <form className="places__sorting" action="#" method="get">
@@ -124,9 +126,6 @@ export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseL
       </div>
     </section>
   ) : (
-    <section className="cities__places places">
-      <h2 className="visually-hidden">Places</h2>
-      <b className="places__found">No places to stay available</b>
-    </section>
+    <EmptyMain/>
   );
 }

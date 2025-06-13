@@ -1,43 +1,12 @@
-import { cities } from '../mock/mocks';
+import { cities } from '../const';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeCity } from '../redux/citySlice';
-import { selectCurrentCityName } from '../redux/citySelectors';
+import { changeCity } from '../redux/city-slice';
+import { selectCurrentCityName } from '../redux/city-selectors';
+import type { LocationItem } from '../types';
+import { locationItems } from '../const';
+import { memo } from 'react';
 
-type LocationItem = {
-  name: string;
-  isActive: boolean;
-};
-
-type LocationItemArray = LocationItem[];
-
-const locationItems: LocationItemArray = [
-  {
-    name: 'Paris',
-    isActive: true
-  },
-  {
-    name: 'Cologne',
-    isActive: false
-  },
-  {
-    name: 'Brussels',
-    isActive: false
-  },
-  {
-    name: 'Amsterdam',
-    isActive: false
-  },
-  {
-    name: 'Hamburg',
-    isActive: false
-  },
-  {
-    name: 'Dusseldorf',
-    isActive: false
-  },
-];
-
-function LocationItem(locationItem: LocationItem): JSX.Element {
+const LocationItemComponent = memo(({ locationItem }: { locationItem: LocationItem }): JSX.Element => {
   const { name, isActive } = locationItem;
   const dispatch = useDispatch();
 
@@ -60,7 +29,9 @@ function LocationItem(locationItem: LocationItem): JSX.Element {
       </a>
     </li>
   );
-}
+});
+
+LocationItemComponent.displayName = 'LocationItem';
 
 export default function LocationListComponent(): JSX.Element {
   const currentCity = useSelector(selectCurrentCityName);
@@ -73,7 +44,7 @@ export default function LocationListComponent(): JSX.Element {
     <div>
       <section className="locations container">
         <ul className="locations__list tabs__list">
-          {updatedLocationItems.map((item) => LocationItem(item))}
+          {updatedLocationItems.map((item) => <LocationItemComponent key={item.name} locationItem={item} />)}
         </ul>
       </section>
     </div>

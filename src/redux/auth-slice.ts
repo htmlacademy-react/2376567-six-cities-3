@@ -54,6 +54,19 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    setAuthData: (state, action: PayloadAction<{
+      status: AuthorizationStatus;
+      email?: string;
+    }>) => {
+      state.authorizationStatus = action.payload.status;
+      if (action.payload.email) {
+        state.userEmail = action.payload.email;
+      }
+    },
+    clearAuth: (state) => {
+      state.authorizationStatus = AuthorizationStatus.NO_AUTH;
+      state.userEmail = null;
+    },
     setAuthorizationStatus: (state, action: PayloadAction<AuthorizationStatus>) => {
       state.authorizationStatus = action.payload;
     },
@@ -92,5 +105,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthorizationStatus, setUserEmail, clearError } = authSlice.actions;
+export const { setAuthorizationStatus, setUserEmail, clearError, setAuthData, clearAuth } = authSlice.actions;
 export default authSlice.reducer;

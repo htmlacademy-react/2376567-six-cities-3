@@ -86,7 +86,7 @@ export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseL
     <section className="cities__places places">
       <h2 className="visually-hidden">Places</h2>
       <b className="places__found">
-        {numberOfPlaces} places to stay in {currentCity}
+        {numberOfPlaces} {sortedOffers.length === 1 ? 'place' : 'places'} to stay in {currentCity}
       </b>
 
       <form className="places__sorting" action="#" method="get">

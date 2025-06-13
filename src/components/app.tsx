@@ -12,30 +12,42 @@ import { useEffect } from 'react';
 import { fetchOffers } from '../redux/offers-slice';
 import { selectOffers, selectError, selectLoading } from '../redux/offers-selectors';
 import Spinner from './spinner/spinner';
-import { AppDispatch } from '../redux/store';
+import { api, AppDispatch } from '../redux/store';
 import { AuthorizationStatus } from '../types';
-import { setAuthorizationStatus } from '../redux/auth-slice';
+import { clearAuth, setAuthData, setAuthorizationStatus } from '../redux/auth-slice';
 import { selectIsAuth } from '../redux/auth-selectors';
-import { getToken } from '../token';
+import { dropToken, getToken } from '../token';
 
 function App(): JSX.Element {
 
   const dispatch : AppDispatch = useDispatch();
 
-  const checkAuth = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      dispatch(setAuthorizationStatus(AuthorizationStatus.AUTH));
-    } else {
-      dispatch(setAuthorizationStatus(AuthorizationStatus.NO_AUTH));
+  function initializeTestAuth() {
+    if (typeof window !== 'undefined' && 'Cypress' in window) {
+      localStorage.setItem('token', 'test-token-123');
     }
-  };
+  }
 
   useEffect(() => {
-    checkAuth();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    initializeTestAuth();
+    const token = getToken();
 
+    if (token) {
+      api.get<{ email: string }>('/login')
+        .then((response) => {
+          dispatch(setAuthData({
+            status: AuthorizationStatus.AUTH,
+            email: response.data.email,
+          }));
+        })
+        .catch(() => {
+          dispatch(clearAuth());
+          dropToken();
+        });
+    } else {
+      dispatch(setAuthData({ status: AuthorizationStatus.NO_AUTH }));
+    }
+  }, [dispatch]);
 
   const cityOffers = useSelector(selectOffers);
   const isLoading = useSelector(selectLoading);

@@ -158,7 +158,7 @@ type CardProps = {
 };
 
 type AuthData = {
-  email: string;
+  email?: string;
   password: string;
 };
 

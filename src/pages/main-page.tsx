@@ -12,7 +12,9 @@ function MainPage({ setActiveCard, activeCard }: MainPageProps): JSX.Element {
 
   const city = useSelector(selectCity);
 
-  const cityOffers = useSelector(selectOffers);
+  const allOffers = useSelector(selectOffers);
+
+  const cityOffers = allOffers.filter((offer) => offer.city.name === city.city.name);
 
   const selectedOffer = activeCard
     ? cityOffers.find((offer) => offer.id === activeCard)
@@ -21,7 +23,6 @@ function MainPage({ setActiveCard, activeCard }: MainPageProps): JSX.Element {
   return (
     <div className="page page--gray page--main">
       <HeaderComponent />
-
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
@@ -43,7 +44,6 @@ function MainPage({ setActiveCard, activeCard }: MainPageProps): JSX.Element {
                 <b className="places__found">No places to stay available</b>
               </section>
             )}
-
             <div className="cities__right-section">
               <section className="cities__map map">
                 {cityOffers.length > 0 && (

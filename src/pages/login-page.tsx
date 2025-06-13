@@ -1,10 +1,14 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppRoute } from '../const';
 import { useSelector } from 'react-redux';
-import { selectIsAuth } from '../redux/authSelectors';
-import { loginAction } from '../redux/authSlice';
+import { selectIsAuth } from '../redux/auth-selectors';
+import { loginAction } from '../redux/auth-slice';
 import { useAppDispatch } from '../redux/store';
+import { cities } from '../const';
+import { getRandomInt } from '../utils';
+import { changeCity } from '../redux/city-slice';
+import { City } from '../types';
 
 export function LoginPage(): JSX.Element {
   const [email, setEmail] = useState('');
@@ -14,6 +18,14 @@ export function LoginPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isAuth = useSelector(selectIsAuth);
+
+  const handleClick = (cityName: City) => {
+    dispatch(changeCity(cityName));
+    navigate('/main');
+  };
+
+  const randomCities = cities[getRandomInt(0, cities.length - 1)];
+
 
   useEffect(() => {
     if (isAuth) {
@@ -77,9 +89,9 @@ export function LoginPage(): JSX.Element {
         <div className="container">
           <div className="header__wrapper">
             <div className="header__left">
-              <a className="header__logo-link" href="main.html">
-                <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
-              </a>
+              <Link className="header__logo-link" to={AppRoute.Main}>
+                <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width={81} height={41} />
+              </Link>
             </div>
           </div>
         </div>
@@ -89,7 +101,7 @@ export function LoginPage(): JSX.Element {
         <div className="page__login-container container">
           <section className="login">
             <h1 className="login__title">Sign in</h1>
-            <form className="login__form form" onSubmit={handleSubmit} noValidate>
+            <form className="login__form form" onSubmit={(evt) => void handleSubmit(evt)} noValidate>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
                 <input
@@ -123,9 +135,9 @@ export function LoginPage(): JSX.Element {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <a className="locations__item-link" href="#">
-                <span>Amsterdam</span>
-              </a>
+              <Link className="locations__item-link" to={AppRoute.Main} onClick={() => handleClick(randomCities)}>
+                <span>{randomCities.name}</span>
+              </Link>
             </div>
           </section>
         </div>

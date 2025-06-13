@@ -7,11 +7,6 @@ type Location = {
   zoom: number;
 };
 
-type City = {
-  name: string;
-  location: Location;
-}
-
 type Host = {
   name: string;
   avatarUrl: string;
@@ -76,7 +71,6 @@ type FavoritesPageProps = {
 };
 
 type PrivateRouteProps = {
-  isAuth: boolean;
   element: JSX.Element;
 };
 
@@ -164,7 +158,7 @@ type CardProps = {
 };
 
 type AuthData = {
-  email: string;
+  email?: string;
   password: string;
 };
 
@@ -182,6 +176,27 @@ type AuthResponse = AuthInfo & { email: string };
 
 type ThunkConfig = {
   extra: { api: AxiosInstance };
+};
+
+type City = {
+  name: string;
+  location: Location;
+}
+
+type LocationItem = {
+  name: string;
+  isActive: boolean;
+};
+
+type LocationItemArray = LocationItem[];
+
+type FavoriteButtonProps = {
+  offerId: string;
+  isFavorite: boolean;
+  className?: string;
+  width?: number;
+  height?: number;
+  onClick?: (e: React.MouseEvent) => void;
 };
 
 export enum AuthorizationStatus {
@@ -219,5 +234,8 @@ export type {
   AuthInfo,
   AuthState,
   AuthResponse,
-  ThunkConfig
+  ThunkConfig,
+  LocationItem,
+  LocationItemArray,
+  FavoriteButtonProps
 };

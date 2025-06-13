@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { OfferCard, Review, OffersState } from '../types';
 import { AxiosInstance } from 'axios';
+import { toggleFavorite } from './favorites-slice';
 
 const initialState: OffersState = {
   data: [],
@@ -149,6 +150,21 @@ const offersSlice = createSlice({
       .addCase(submitReview.rejected, (state, action) => {
         state.reviewSubmitLoading = false;
         state.reviewSubmitError = action.payload as string;
+      })
+      .addCase(toggleFavorite.fulfilled, (state, action) => {
+        const updatedOffer = action.payload;
+
+        state.data = state.data.map((offer) =>
+          offer.id === updatedOffer.id ? updatedOffer : offer
+        );
+
+        if (state.currentOffer?.id === updatedOffer.id) {
+          state.currentOffer = updatedOffer;
+        }
+
+        state.nearbyOffers = state.nearbyOffers.map((offer) =>
+          offer.id === updatedOffer.id ? updatedOffer : offer
+        );
       });
   }
 });

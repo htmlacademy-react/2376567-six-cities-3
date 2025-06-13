@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthData, AuthInfo, AuthResponse, ThunkConfig } from '../types';
-import { saveToken } from '../token';
+import { dropToken, saveToken } from '../token';
 import { AuthorizationStatus, AuthState } from '../types';
 import axios from 'axios';
 
@@ -54,6 +54,19 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    setAuthData: (state, action: PayloadAction<{
+      status: AuthorizationStatus;
+      email?: string;
+    }>) => {
+      state.authorizationStatus = action.payload.status;
+      if (action.payload.email) {
+        state.userEmail = action.payload.email;
+      }
+    },
+    clearAuth: (state) => {
+      state.authorizationStatus = AuthorizationStatus.NO_AUTH;
+      state.userEmail = null;
+    },
     setAuthorizationStatus: (state, action: PayloadAction<AuthorizationStatus>) => {
       state.authorizationStatus = action.payload;
     },
@@ -63,6 +76,11 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    logout: (state) => {
+      state.authorizationStatus = AuthorizationStatus.NO_AUTH;
+      state.userEmail = null;
+      dropToken();
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -87,5 +105,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthorizationStatus, setUserEmail, clearError } = authSlice.actions;
+export const { setAuthorizationStatus, setUserEmail, clearError, setAuthData, clearAuth } = authSlice.actions;
 export default authSlice.reducer;

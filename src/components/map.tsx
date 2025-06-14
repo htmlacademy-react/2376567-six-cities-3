@@ -17,14 +17,14 @@ export default function MapComponent({ city, offers, selectedOffer }: MapProps) 
 
     const defaultCustomIcon = leaflet.icon({
       iconUrl: URL_MARKER.default,
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
+      iconSize: [27, 39],
+      iconAnchor: [13.5, 40],
     });
 
     const currentCustomIcon = leaflet.icon({
       iconUrl: URL_MARKER.current,
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
+      iconSize: [27, 39],
+      iconAnchor: [13.5, 40],
     });
 
     if (map) {

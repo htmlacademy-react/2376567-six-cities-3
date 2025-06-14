@@ -41,12 +41,8 @@ export default function LocationListComponent(): JSX.Element {
   }));
 
   return (
-    <div>
-      <section className="locations container">
-        <ul className="locations__list tabs__list">
-          {updatedLocationItems.map((item) => <LocationItemComponent key={item.name} locationItem={item} />)}
-        </ul>
-      </section>
-    </div>
+    <ul className="locations__list tabs__list">
+      {updatedLocationItems.map((item) => <LocationItemComponent key={item.name} locationItem={item} />)}
+    </ul>
   );
 }

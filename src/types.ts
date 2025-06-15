@@ -170,6 +170,7 @@ type AuthState = {
   authorizationStatus: AuthorizationStatus;
   error: string | null;
   userEmail: string | null;
+  isLoading: boolean;
 }
 
 type AuthResponse = AuthInfo & { email: string };

@@ -48,6 +48,7 @@ const initialState: AuthState = {
   authorizationStatus: AuthorizationStatus.UNKNOWN,
   error: null,
   userEmail: null,
+  isLoading: false,
 };
 
 const authSlice = createSlice({
@@ -80,27 +81,41 @@ const authSlice = createSlice({
       state.authorizationStatus = AuthorizationStatus.NO_AUTH;
       state.userEmail = null;
       dropToken();
+      state.isLoading = false;
     }
   },
+
   extraReducers: (builder) => {
     builder
+      .addCase(loginAction.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
       .addCase(loginAction.fulfilled, (state, action) => {
         state.authorizationStatus = AuthorizationStatus.AUTH;
         state.userEmail = action.payload.email;
         state.error = null;
+        state.isLoading = false;
       })
       .addCase(loginAction.rejected, (state, action) => {
         state.authorizationStatus = AuthorizationStatus.NO_AUTH;
         state.error = (action.payload as { error: string })?.error || 'Authorization failed';
+        state.isLoading = false;
+      })
+      .addCase(registerAction.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
       })
       .addCase(registerAction.fulfilled, (state, action) => {
         state.authorizationStatus = AuthorizationStatus.AUTH;
         state.userEmail = action.payload.email;
         state.error = null;
+        state.isLoading = false;
       })
       .addCase(registerAction.rejected, (state, action) => {
         state.authorizationStatus = AuthorizationStatus.NO_AUTH;
         state.error = (action.payload as { error: string })?.error || 'Registration failed';
+        state.isLoading = false;
       });
   },
 });

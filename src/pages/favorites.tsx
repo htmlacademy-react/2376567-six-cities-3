@@ -8,6 +8,7 @@ import { AppRoute } from '../const';
 import FavoriteButton from '../components/favorite-button';
 import { useSelector } from 'react-redux';
 import { selectFavorites, selectFavoritesError, selectFavoritesLoading } from '../redux/favorites-selectors';
+import Spinner from '../components/spinner/spinner';
 
 function FavoritesPage() {
   const dispatch = useAppDispatch();
@@ -20,7 +21,7 @@ function FavoritesPage() {
   }, [dispatch]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    <Spinner/>;
   }
 
   if (error) {

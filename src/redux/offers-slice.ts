@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { OfferCard, Review, OffersState } from '../types';
-import { AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { toggleFavorite } from './favorites-slice';
 
 const initialState: OffersState = {
@@ -31,13 +31,16 @@ export const fetchOffers = createAsyncThunk<OfferCard[], void, { extra: { api: A
   }
 );
 
-export const fetchOfferById = createAsyncThunk<OfferCard, string, { extra: { api: AxiosInstance } }>(
+export const fetchOfferById = createAsyncThunk<OfferCard | null, string, { extra: { api: AxiosInstance } }>(
   'offers/fetchById',
   async (offerId, { extra: { api } }) => {
     try {
       const response = await api.get<OfferCard>(`/offers/${offerId}`);
       return response.data;
     } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return null;
+      }
       // eslint-disable-next-line no-console
       console.log(error);
       throw error;
@@ -103,6 +106,7 @@ const offersSlice = createSlice({
       .addCase(fetchOffers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string || 'Failed to load offers';
+        state.currentOffer = null;
       })
       .addCase(fetchOfferById.pending, (state) => {
         state.loading = true;

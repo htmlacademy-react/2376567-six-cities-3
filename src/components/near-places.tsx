@@ -83,7 +83,7 @@ export default function NearPlacesComponent({ offers, setActiveCard }: NearPlace
                   >{offer.title}
                   </Link>
                 </h2>
-                <p className="place-card__type">{offer.type}</p>
+                <p className="place-card__type">{offer.type && offer.type[0].toUpperCase() + offer.type.slice(1)}</p>
               </div>
             </article>
           );

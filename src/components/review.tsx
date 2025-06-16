@@ -12,6 +12,7 @@ import {
   selectReviewSubmitLoading,
   selectReviewSubmitError
 } from '../redux/review-selectors';
+import { calculateRatingWidth } from '../utils';
 
 export function ReviewsSection({ offerId }: { offerId: string | undefined }) {
   const dispatch = useAppDispatch();
@@ -75,7 +76,7 @@ export function ReviewsSection({ offerId }: { offerId: string | undefined }) {
               <div className="reviews__info">
                 <div className="reviews__rating rating">
                   <div className="reviews__stars rating__stars">
-                    <span style={{ width: `${review.rating * 20}%` }}></span>
+                    <span style={{ width: `${calculateRatingWidth(review.rating)}%` }}></span>
                     <span className="visually-hidden">Rating</span>
                   </div>
                 </div>

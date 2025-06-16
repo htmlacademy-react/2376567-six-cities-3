@@ -18,10 +18,12 @@ function groupByCity(cards: OfferCard[]): FavoritesData {
   };
 }
 
+const calculateRatingWidth = (rating:number) => rating * 20;
+
 const generateUUIDKey = (): `${string}-${string}-${string}-${string}-${string}` => crypto.randomUUID();
 
 const generateTextKey = (text: string, index: number):string => `${text.substring(0, 10)}-${index}`;
 
 const getRandomInt = (min:number, max:number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-export { groupByCity, generateUUIDKey, generateTextKey, getRandomInt};
+export { groupByCity, generateUUIDKey, generateTextKey, getRandomInt, calculateRatingWidth};

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useAppDispatch } from '../redux/store';
 import { fetchFavorites } from '../redux/favorites-slice';
-import { groupByCity } from '../utils';
+import { calculateRatingWidth, groupByCity } from '../utils';
 import HeaderComponent from '../components/header';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../const';
@@ -91,7 +91,7 @@ function FavoritesPage() {
                             </div>
                             <div className="place-card__rating rating">
                               <div className="place-card__stars rating__stars">
-                                <span style={{ width: `${(card.rating / 5) * 100}%` }}></span>
+                                <span style={{ width: `${(calculateRatingWidth(card.rating))}%` }}></span>
                                 <span className="visually-hidden">Rating</span>
                               </div>
                             </div>

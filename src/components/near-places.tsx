@@ -7,6 +7,7 @@ import { selectFavorites } from '../redux/favorites-selectors';
 import { useSelector } from 'react-redux';
 import FavoriteButton from '../components/favorite-button';
 import { selectIsAuth } from '../redux/auth-selectors';
+import { calculateRatingWidth } from '../utils';
 
 export default function NearPlacesComponent({ offers, setActiveCard }: NearPlacesProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -72,7 +73,7 @@ export default function NearPlacesComponent({ offers, setActiveCard }: NearPlace
                 </div>
                 <div className="place-card__rating rating">
                   <div className="place-card__stars rating__stars">
-                    <span style={{ width: `${Math.round(offer.rating) * 20}%` }} />
+                    <span style={{ width: `${calculateRatingWidth(offer.rating)}%` }} />
                     <span className="visually-hidden">Rating</span>
                   </div>
                 </div>

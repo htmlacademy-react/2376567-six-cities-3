@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { OfferDetails, OfferPageProps, ImageWithUUID, GoodWithUUID } from '../types';
 import { ReviewsSection } from '../components/review';
-import { generateUUIDKey, generateTextKey } from '../utils';
+import { generateUUIDKey, generateTextKey, calculateRatingWidth } from '../utils';
 import MapComponent from '../components/map';
 import NearPlacesComponent from '../components/near-places';
 import { useSelector } from 'react-redux';
@@ -76,14 +76,14 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
 
   const city = offer.city;
 
-  const imagesWithId: ImageWithUUID[] = offer.images.map((url): ImageWithUUID => ({
+  const imagesWithId: ImageWithUUID[] = offer.images.map((url, index): ImageWithUUID => ({
     url,
-    id: generateUUIDKey(),
+    id: `${index}_${url}`,
   }));
 
-  const goodsWithId: GoodWithUUID[] = offer.goods.map((goodItem): GoodWithUUID => ({
+  const goodsWithId: GoodWithUUID[] = offer.goods.map((goodItem, index): GoodWithUUID => ({
     goodItem,
-    id: generateUUIDKey(),
+    id: `${index}_${goodItem}`,
   }));
 
   const nearestOffers = nearbyOffers.slice(0, 3);
@@ -128,7 +128,7 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
 
               <div className="offer__rating rating">
                 <div className="offer__stars rating__stars">
-                  <span style={{ width: `${Math.round(offer.rating) * 20}%` }}></span>
+                  <span style={{ width: `${calculateRatingWidth(offer.rating)}%` }}></span>
                   <span className="visually-hidden">Rating</span>
                 </div>
                 <span className="offer__rating-value rating__value">{offer.rating}</span>

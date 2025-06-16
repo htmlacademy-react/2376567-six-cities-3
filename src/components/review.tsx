@@ -44,49 +44,51 @@ export function ReviewsSection({ offerId }: { offerId: string | undefined }) {
     );
   }
 
+  const sortedAndLimitedReviews = [...reviews]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 10);
+
   return (
     <section className="offer__reviews reviews">
       <h2 className="reviews__title">
-        Reviews · <span className="reviews__amount">{reviews.length}</span>
+        Reviews · <span className="reviews__amount">{sortedAndLimitedReviews.length}</span>
       </h2>
 
-      {reviews.length > 0 && (
+      {sortedAndLimitedReviews.length > 0 && (
         <ul className="reviews__list">
-          {[...reviews]
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            .map((review) => (
-              <li key={review.id} className="reviews__item">
-                <div className="reviews__user user">
-                  <div className="reviews__avatar-wrapper user__avatar-wrapper">
-                    <img
-                      className="reviews__avatar user__avatar"
-                      src={review.user.avatarUrl}
-                      width="54"
-                      height="54"
-                      alt={`${review.user.name}'s avatar`}
-                    />
-                  </div>
-                  <span className="reviews__user-name">
-                    {review.user.name}
-                  </span>
+          {sortedAndLimitedReviews.map((review) => (
+            <li key={review.id} className="reviews__item">
+              <div className="reviews__user user">
+                <div className="reviews__avatar-wrapper user__avatar-wrapper">
+                  <img
+                    className="reviews__avatar user__avatar"
+                    src={review.user.avatarUrl}
+                    width="54"
+                    height="54"
+                    alt={`${review.user.name}'s avatar`}
+                  />
                 </div>
-                <div className="reviews__info">
-                  <div className="reviews__rating rating">
-                    <div className="reviews__stars rating__stars">
-                      <span style={{ width: `${review.rating * 20}%` }}></span>
-                      <span className="visually-hidden">Rating</span>
-                    </div>
+                <span className="reviews__user-name">
+                  {review.user.name}
+                </span>
+              </div>
+              <div className="reviews__info">
+                <div className="reviews__rating rating">
+                  <div className="reviews__stars rating__stars">
+                    <span style={{ width: `${review.rating * 20}%` }}></span>
+                    <span className="visually-hidden">Rating</span>
                   </div>
-                  <p className="reviews__text">{review.comment}</p>
-                  <time className="reviews__time" dateTime={review.date}>
-                    {new Date(review.date).toLocaleDateString('en-US', {
-                      month: 'long',
-                      year: 'numeric',
-                    })}
-                  </time>
                 </div>
-              </li>
-            ))}
+                <p className="reviews__text">{review.comment}</p>
+                <time className="reviews__time" dateTime={review.date}>
+                  {new Date(review.date).toLocaleDateString('en-US', {
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </time>
+              </div>
+            </li>
+          ))}
         </ul>
       )}
 

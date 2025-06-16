@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom';
-import { AppRoute } from '../const';
-import { CardProps} from '../types';
+import { AppRoute, CARD_IMAGE_SIZES, FAVORITE_BUTTON_SIZES } from '../const';
+import { CardProps } from '../types';
 import FavoriteButton from './favorite-button';
 import { useAppDispatch } from '../redux/store';
 import { selectOffers } from '../redux/offers-selectors';
 import { useSelector } from 'react-redux';
-import { toggleFavorite } from '../redux/favorites-slice';
+import { fetchFavorites, toggleFavorite } from '../redux/favorites-slice';
 import { selectFavorites } from '../redux/favorites-selectors';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect } from 'react';
+import { selectIsAuth } from '../redux/auth-selectors';
+import { calculateRatingWidth } from '../utils';
 
-function CardComponent({
+function Card({
   card,
   onMouseEnter,
   onMouseLeave,
@@ -28,22 +30,28 @@ function CardComponent({
   const dispatch = useAppDispatch();
   const offers = useSelector(selectOffers);
   const favorites = useSelector(selectFavorites);
+  const isAuth = useSelector(selectIsAuth);
 
   const currentCard = offers.find((o) => o.id === card.id) || card;
-  const isFavorite = favorites.some((fav) => fav.id === card.id) || currentCard.isFavorite;
+  const isFavorite = isAuth && (favorites.some((fav) => fav.id === card.id) || currentCard.isFavorite);
 
   const handleFavoriteClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     dispatch(toggleFavorite({
       offerId: currentCard.id,
-      status: currentCard.isFavorite ? 0 : 1
+      status: isFavorite ? 0 : 1
     }));
-  }, [currentCard.id, currentCard.isFavorite, dispatch]);
+  }, [currentCard.id, isFavorite, dispatch]);
 
   const handleMouseEnter = useCallback(() => onMouseEnter?.(id), [onMouseEnter, id]);
   const handleMouseLeave = useCallback(() => onMouseLeave?.(), [onMouseLeave]);
 
-  const ratingWidth = `${Math.round(rating) * 20}%`;
+  useEffect(() => {
+    if (isAuth) {
+      dispatch(fetchFavorites());
+    }
+  }, [isAuth, dispatch]);
 
   return (
     <article
@@ -61,11 +69,11 @@ function CardComponent({
           <img
             className="place-card__image"
             src={previewImage}
-            width={cardType === 'favorites' ? 150 : 260}
-            height={cardType === 'favorites' ? 110 : 200}
+            width={cardType === 'favorites' ? CARD_IMAGE_SIZES.favorites.width : CARD_IMAGE_SIZES.default.width}
+            height={cardType === 'favorites' ? CARD_IMAGE_SIZES.favorites.height : CARD_IMAGE_SIZES.default.height}
             alt={title}
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://via.placeholder.com/260x200';
+            onError={(evt) => {
+              (evt.target as HTMLImageElement).src = 'https://via.placeholder.com/260x200';
             }}
           />
         </Link>
@@ -79,15 +87,15 @@ function CardComponent({
           <FavoriteButton
             offerId={id}
             isFavorite={isFavorite}
-            className={'place-card'}
-            width={cardType === 'favorites' ? 18 : 18}
-            height={cardType === 'favorites' ? 19 : 19}
+            className="place-card"
+            width={FAVORITE_BUTTON_SIZES[cardType === 'favorites' ? 'FAVORITES' : 'DEFAULT'].width}
+            height={FAVORITE_BUTTON_SIZES[cardType === 'favorites' ? 'FAVORITES' : 'DEFAULT'].height}
             onClick={handleFavoriteClick}
           />
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{ width: ratingWidth }}></span>
+            <span style={{ width: `${calculateRatingWidth(rating)}%` }}></span>
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
@@ -100,4 +108,4 @@ function CardComponent({
   );
 }
 
-export default memo(CardComponent);
+export default memo(Card);

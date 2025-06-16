@@ -5,6 +5,7 @@ import { createAPI } from '../api';
 import authReducer from './auth-slice';
 import { useDispatch } from 'react-redux';
 import favoritesReducer from './favorites-slice';
+import reviewReducer from './review-slice';
 
 export const api = createAPI();
 
@@ -14,6 +15,7 @@ export const store = configureStore({
     offers: offersReducer,
     auth: authReducer,
     favorites: favoritesReducer,
+    review: reviewReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

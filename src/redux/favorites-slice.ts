@@ -1,6 +1,7 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { OfferCard } from '../types';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AuthorizationStatus, OfferCard } from '../types';
 import { AxiosInstance } from 'axios';
+import { logout, setAuthData } from './auth-slice';
 
 type FavoritesState = {
   data: OfferCard[];
@@ -14,6 +15,11 @@ const initialState: FavoritesState = {
   loading: false,
   error: null,
   count: 0,
+};
+
+type AuthPayload = {
+  status: AuthorizationStatus;
+  email?: string;
 };
 
 export const fetchFavorites = createAsyncThunk<OfferCard[], void, { extra: { api: AxiosInstance } }>(
@@ -61,6 +67,17 @@ const favoritesSlice = createSlice({
           state.data = state.data.filter((offer) => offer.id !== updatedOffer.id);
         }
         state.count = state.data.length;
+      })
+      .addCase(logout, (state) => {
+        state.data = [];
+        state.count = 0;
+        state.error = null;
+        state.loading = false;
+      })
+      .addCase(setAuthData, (state, action: PayloadAction<AuthPayload>) => {
+        if (action.payload.status === AuthorizationStatus.AUTH) {
+          state.loading = true;
+        }
       });
   },
 });

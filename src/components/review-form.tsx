@@ -1,5 +1,9 @@
 import React, { useState, FormEvent } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { ReviewFormProps } from '../types';
+import { setReviewError, clearReviewError, setReviewSendingStatus } from '../redux/review-slice';
+import { RootState } from '../redux/store';
+import { REVIEW_LENGTH } from '../const';
 
 export function ReviewForm({ onSubmit }: ReviewFormProps) {
   const [reviewData, setReviewData] = useState({
@@ -7,33 +11,63 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
     review: ''
   });
 
+  const dispatch = useDispatch();
+  const { error: submitError, isSending } = useSelector((state: RootState) => state.review);
+
   const handleRatingChange = (value: number) => {
-    setReviewData((prev) => ({ ...prev, rating: value }));
+    if (!isSending) {
+      setReviewData((prev) => ({ ...prev, rating: value }));
+      dispatch(clearReviewError());
+    }
   };
 
   const handleReviewChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setReviewData((prev) => ({ ...prev, review: e.target.value }));
+    if (!isSending) {
+      setReviewData((prev) => ({ ...prev, review: e.target.value }));
+      dispatch(clearReviewError());
+    }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (reviewData.review.length < 50 || reviewData.review.length > 300) {
+
+    if (isSending) {
       return;
     }
-    onSubmit({
-      rating: reviewData.rating,
-      comment: reviewData.review
-    });
-    setReviewData({ rating: 0, review: '' });
+
+    if (reviewData.review.length < REVIEW_LENGTH.MIN || reviewData.review.length > REVIEW_LENGTH.MAX) {
+      dispatch(setReviewError(`Review must be between ${REVIEW_LENGTH.MIN} and ${REVIEW_LENGTH.MAX} characters`));
+      return;
+    }
+
+    dispatch(setReviewSendingStatus(true));
+
+    try {
+      const result = onSubmit({
+        rating: reviewData.rating,
+        comment: reviewData.review
+      });
+
+      if (result instanceof Promise) {
+        await result;
+      }
+
+      setReviewData({ rating: 0, review: '' });
+    } catch (error) {
+      dispatch(setReviewError('Failed to submit review. Please try again.'));
+    } finally {
+      dispatch(setReviewSendingStatus(false));
+    }
   };
 
   const isSubmitDisabled =
     reviewData.rating === 0 ||
-    reviewData.review.length < 50 ||
-    reviewData.review.length > 300;
+    reviewData.review.length < REVIEW_LENGTH.MIN ||
+    reviewData.review.length > REVIEW_LENGTH.MAX ||
+    isSending;
 
   return (
-    <form className="reviews__form form" onSubmit={handleSubmit}>
+    <form className="reviews__form form" onSubmit={(evt) => void handleSubmit(evt)}>
       <label className="reviews__label form__label" htmlFor="review">
         Your review
       </label>
@@ -49,17 +83,12 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
               type="radio"
               checked={reviewData.rating === value}
               onChange={() => handleRatingChange(value)}
+              disabled={isSending}
             />
             <label
               htmlFor={`${value}-stars`}
-              className="reviews__rating-label form__rating-label"
-              title={[
-                'perfect',
-                'good',
-                'not bad',
-                'badly',
-                'terribly'
-              ][5 - value]}
+              className={`reviews__rating-label form__rating-label ${isSending ? 'reviews__rating-label--disabled' : ''}`}
+              title={['perfect', 'good', 'not bad', 'badly', 'terribly'][5 - value]}
             >
               <svg className="form__star-image" width="37" height="33">
                 <use xlinkHref="#icon-star"></use>
@@ -76,7 +105,14 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
         placeholder="Tell how was your stay, what you like and what can be improved"
         value={reviewData.review}
         onChange={handleReviewChange}
+        disabled={isSending}
       />
+
+      {submitError && (
+        <div className="reviews__error-message">
+          {submitError}
+        </div>
+      )}
 
       <div className="reviews__button-wrapper">
         <p className="reviews__help">
@@ -89,9 +125,10 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
           type="submit"
           disabled={isSubmitDisabled}
         >
-          Submit
+          {isSending ? 'Submitting...' : 'Submit'}
         </button>
       </div>
     </form>
   );
 }
+

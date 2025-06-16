@@ -1,7 +1,8 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { OfferCard, Review, OffersState } from '../types';
-import { AxiosInstance } from 'axios';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { OfferCard, Review, OffersState, AuthorizationStatus } from '../types';
+import axios, { AxiosInstance } from 'axios';
 import { toggleFavorite } from './favorites-slice';
+import { logout, setAuthData } from './auth-slice';
 
 const initialState: OffersState = {
   data: [],
@@ -31,13 +32,16 @@ export const fetchOffers = createAsyncThunk<OfferCard[], void, { extra: { api: A
   }
 );
 
-export const fetchOfferById = createAsyncThunk<OfferCard, string, { extra: { api: AxiosInstance } }>(
+export const fetchOfferById = createAsyncThunk<OfferCard | null, string, { extra: { api: AxiosInstance } }>(
   'offers/fetchById',
   async (offerId, { extra: { api } }) => {
     try {
       const response = await api.get<OfferCard>(`/offers/${offerId}`);
       return response.data;
     } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return null;
+      }
       // eslint-disable-next-line no-console
       console.log(error);
       throw error;
@@ -80,15 +84,6 @@ const offersSlice = createSlice({
   name: 'offers',
   initialState,
   reducers: {
-    loadOffers: (state, action: PayloadAction<OfferCard[]>) => {
-      state.data = action.payload;
-    },
-    clearCurrentOffer: (state) => {
-      state.currentOffer = null;
-    },
-    clearNearbyOffers: (state) => {
-      state.nearbyOffers = [];
-    }
   },
   extraReducers: (builder) => {
     builder
@@ -103,6 +98,7 @@ const offersSlice = createSlice({
       .addCase(fetchOffers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string || 'Failed to load offers';
+        state.currentOffer = null;
       })
       .addCase(fetchOfferById.pending, (state) => {
         state.loading = true;
@@ -165,9 +161,38 @@ const offersSlice = createSlice({
         state.nearbyOffers = state.nearbyOffers.map((offer) =>
           offer.id === updatedOffer.id ? updatedOffer : offer
         );
+      })
+      .addCase(logout, (state) => {
+        state.data = state.data.map((offer) => ({
+          ...offer,
+          isFavorite: false
+        }));
+
+        if (state.currentOffer) {
+          state.currentOffer.isFavorite = false;
+        }
+
+        state.nearbyOffers = state.nearbyOffers.map((offer) => ({
+          ...offer,
+          isFavorite: false
+        }));
+      })
+      .addCase(setAuthData, (state, action) => {
+        if (action.payload.status === AuthorizationStatus.NO_AUTH) {
+          state.data = state.data.map((offer) => ({
+            ...offer,
+            isFavorite: false
+          }));
+          if (state.currentOffer) {
+            state.currentOffer.isFavorite = false;
+          }
+          state.nearbyOffers = state.nearbyOffers.map((offer) => ({
+            ...offer,
+            isFavorite: false
+          }));
+        }
       });
   }
 });
 
-export const { loadOffers, clearCurrentOffer, clearNearbyOffers } = offersSlice.actions;
 export default offersSlice.reducer;

@@ -1,4 +1,4 @@
-import CardComponent from './card';
+import Card from './card';
 import { PlacesComponentProps } from '../types';
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -45,7 +45,7 @@ function SortOption({ option, onClick }: { option: SortOption; onClick: () => vo
   );
 }
 
-export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseLeave }: PlacesComponentProps): JSX.Element {
+export default function Places({ placeCardsData, onMouseEnter, onMouseLeave }: PlacesComponentProps): JSX.Element {
 
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [options, setOptions] = useState<SortOptions>(initialSortOptions);
@@ -116,7 +116,7 @@ export default function PlacesComponent({ placeCardsData, onMouseEnter, onMouseL
 
       <div className="cities__places-list places__list tabs__content">
         {sortedOffers.map((card) => (
-          <CardComponent
+          <Card
             key={card.id}
             card={card}
             onMouseEnter={() => onMouseEnter?.(card.id)}

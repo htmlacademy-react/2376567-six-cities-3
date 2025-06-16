@@ -1,11 +1,18 @@
 import { useEffect, useRef } from 'react';
 import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import useMap from '../hooks/useMap';
+import useMap from '../hooks/use-map';
 import { URL_MARKER } from '../const';
 import { MapProps } from '../types';
 
-export default function MapComponent({ city, offers, selectedOffer }: MapProps) {
+const MAP_HEIGHT = '100%';
+
+const MARKER_CONFIG = {
+  SIZE: [27, 39] as [number, number],
+  ANCHOR: [13.5, 40] as [number, number],
+} as const;
+
+export default function Map({ city, offers, selectedOffer }: MapProps) {
 
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
@@ -17,14 +24,14 @@ export default function MapComponent({ city, offers, selectedOffer }: MapProps) 
 
     const defaultCustomIcon = leaflet.icon({
       iconUrl: URL_MARKER.default,
-      iconSize: [27, 39],
-      iconAnchor: [13.5, 40],
+      iconSize: MARKER_CONFIG.SIZE,
+      iconAnchor: MARKER_CONFIG.ANCHOR,
     });
 
     const currentCustomIcon = leaflet.icon({
       iconUrl: URL_MARKER.current,
-      iconSize: [27, 39],
-      iconAnchor: [13.5, 40],
+      iconSize: MARKER_CONFIG.SIZE,
+      iconAnchor: MARKER_CONFIG.ANCHOR,
     });
 
     if (map) {
@@ -53,5 +60,5 @@ export default function MapComponent({ city, offers, selectedOffer }: MapProps) 
     }
   }, [map, offers, selectedOffer]);
 
-  return <div ref={mapRef} style={{ height: '100%' }}></div>;
+  return <div ref={mapRef} style={{ height: MAP_HEIGHT }}></div>;
 }

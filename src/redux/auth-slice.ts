@@ -71,12 +71,7 @@ const authSlice = createSlice({
     setAuthorizationStatus: (state, action: PayloadAction<AuthorizationStatus>) => {
       state.authorizationStatus = action.payload;
     },
-    setUserEmail: (state, action: PayloadAction<string | null>) => {
-      state.userEmail = action.payload;
-    },
-    clearError: (state) => {
-      state.error = null;
-    },
+
     logout: (state) => {
       state.authorizationStatus = AuthorizationStatus.NO_AUTH;
       state.userEmail = null;
@@ -120,5 +115,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthorizationStatus, setUserEmail, clearError, setAuthData, clearAuth, logout } = authSlice.actions;
+export const { setAuthorizationStatus, setAuthData, clearAuth, logout } = authSlice.actions;
 export default authSlice.reducer;

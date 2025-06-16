@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../const';
-import HeaderComponent from '../components/header';
+import Header from '../components/header';
 
 function NotFoundPage(): JSX.Element {
   return (
     <div className="page page--gray page--not-found">
-      <HeaderComponent />
+      <Header />
       <main className="page__main page__main--not-found">
         <div className="container">
           <section className="not-found">

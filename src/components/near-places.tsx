@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { AppRoute } from '../const';
+import { AppRoute, CARD_IMAGE_SIZES, FAVORITE_BUTTON_SIZES } from '../const';
 import { NearPlacesProps } from '../types';
 import { useAppDispatch } from '../redux/store';
 import { toggleFavorite } from '../redux/favorites-slice';
@@ -9,7 +9,7 @@ import FavoriteButton from '../components/favorite-button';
 import { selectIsAuth } from '../redux/auth-selectors';
 import { calculateRatingWidth } from '../utils';
 
-export default function NearPlacesComponent({ offers, setActiveCard }: NearPlacesProps): JSX.Element {
+export default function NearPlaces({ offers, setActiveCard }: NearPlacesProps): JSX.Element {
   const dispatch = useAppDispatch();
   const favorites = useSelector(selectFavorites);
   const isAuth = useSelector(selectIsAuth);
@@ -50,8 +50,8 @@ export default function NearPlacesComponent({ offers, setActiveCard }: NearPlace
                   <img
                     className="place-card__image"
                     src={offer.previewImage}
-                    width={260}
-                    height={200}
+                    width={CARD_IMAGE_SIZES.favorites.width}
+                    height={CARD_IMAGE_SIZES.favorites.height}
                     alt="Place image"
                   />
                 </Link>
@@ -66,8 +66,8 @@ export default function NearPlacesComponent({ offers, setActiveCard }: NearPlace
                     offerId={offer.id}
                     isFavorite={isFavorite}
                     className="place-card"
-                    width={18}
-                    height={19}
+                    width={FAVORITE_BUTTON_SIZES.DEFAULT.width}
+                    height={FAVORITE_BUTTON_SIZES.DEFAULT.height}
                     onClick={(evt) => handleFavoriteClick(offer.id, isFavorite, evt)}
                   />
                 </div>

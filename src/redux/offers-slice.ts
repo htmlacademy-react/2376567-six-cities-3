@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { OfferCard, Review, OffersState, AuthorizationStatus } from '../types';
 import axios, { AxiosInstance } from 'axios';
 import { toggleFavorite } from './favorites-slice';
@@ -84,15 +84,6 @@ const offersSlice = createSlice({
   name: 'offers',
   initialState,
   reducers: {
-    loadOffers: (state, action: PayloadAction<OfferCard[]>) => {
-      state.data = action.payload;
-    },
-    clearCurrentOffer: (state) => {
-      state.currentOffer = null;
-    },
-    clearNearbyOffers: (state) => {
-      state.nearbyOffers = [];
-    }
   },
   extraReducers: (builder) => {
     builder
@@ -204,5 +195,4 @@ const offersSlice = createSlice({
   }
 });
 
-export const { loadOffers, clearCurrentOffer, clearNearbyOffers } = offersSlice.actions;
 export default offersSlice.reducer;

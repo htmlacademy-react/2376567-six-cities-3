@@ -33,7 +33,7 @@ const LocationItemComponent = memo(({ locationItem }: { locationItem: LocationIt
 
 LocationItemComponent.displayName = 'LocationItem';
 
-export default function LocationListComponent(): JSX.Element {
+export default function LocationList(): JSX.Element {
   const currentCity = useSelector(selectCurrentCityName);
   const updatedLocationItems = locationItems.map((item) => ({
     ...item,

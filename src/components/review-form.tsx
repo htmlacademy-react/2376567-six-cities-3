@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { ReviewFormProps } from '../types';
 import { setReviewError, clearReviewError, setReviewSendingStatus } from '../redux/review-slice';
 import { RootState } from '../redux/store';
+import { REVIEW_LENGTH } from '../const';
 
 export function ReviewForm({ onSubmit }: ReviewFormProps) {
   const [reviewData, setReviewData] = useState({
@@ -34,8 +35,8 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
       return;
     }
 
-    if (reviewData.review.length < 50 || reviewData.review.length > 300) {
-      dispatch(setReviewError('Review must be between 50 and 300 characters'));
+    if (reviewData.review.length < REVIEW_LENGTH.MIN || reviewData.review.length > REVIEW_LENGTH.MAX) {
+      dispatch(setReviewError(`Review must be between ${REVIEW_LENGTH.MIN} and ${REVIEW_LENGTH.MAX} characters`));
       return;
     }
 
@@ -61,8 +62,8 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
 
   const isSubmitDisabled =
     reviewData.rating === 0 ||
-    reviewData.review.length < 50 ||
-    reviewData.review.length > 300 ||
+    reviewData.review.length < REVIEW_LENGTH.MIN ||
+    reviewData.review.length > REVIEW_LENGTH.MAX ||
     isSending;
 
   return (

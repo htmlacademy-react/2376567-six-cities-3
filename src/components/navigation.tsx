@@ -10,7 +10,7 @@ import { fetchFavorites } from '../redux/favorites-slice';
 import { useEffect } from 'react';
 import { AppDispatch } from '../redux/store';
 
-export default function NavigationComponent(): JSX.Element {
+export default function Navigation(): JSX.Element {
   const isAuth = useSelector(selectIsAuth);
   const userEmail = useSelector(selectUserEmail);
   const favoritesCount = useSelector(selectFavoritesCount);

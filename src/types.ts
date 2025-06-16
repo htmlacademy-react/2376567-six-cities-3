@@ -66,15 +66,9 @@ type LocationComponentProps = {
   location: CardGroup;
 };
 
-type FavoritesPageProps = {
-  data: FavoritesData;
-};
-
 type PrivateRouteProps = {
   element: JSX.Element;
 };
-
-type ActiveCardType = string | null;
 
 type Review = {
   id: string;
@@ -98,11 +92,6 @@ type ReviewFormProps = {
   onSubmit: (data: { rating: number; comment: string }) => Promise<void> | void;
   loading?: boolean;
   error?: string | null;
-};
-
-type ReviewsSectionProps = {
-  reviews: Review[];
-  onReviewSubmit: (data: { rating: number; review: string }) => void;
 };
 
 type ImageURL = string;
@@ -211,21 +200,18 @@ export type {
   CardProps,
   Location,
   FavoritesData,
-  FavoritesPageProps,
   CardGroup,
   OfferCard,
   OfferDetails,
   PlacesComponentProps,
   LocationComponentProps,
   PrivateRouteProps,
-  ActiveCardType,
   OfferPageProps,
   Review,
   MapProps,
   Host,
   City,
   ReviewFormProps,
-  ReviewsSectionProps,
   ImageWithUUID,
   GoodWithUUID,
   NearPlacesProps,

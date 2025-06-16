@@ -2,20 +2,21 @@ import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { OfferDetails, OfferPageProps, ImageWithUUID, GoodWithUUID } from '../types';
 import { ReviewsSection } from '../components/review';
-import { generateUUIDKey, generateTextKey, calculateRatingWidth } from '../utils';
-import MapComponent from '../components/map';
-import NearPlacesComponent from '../components/near-places';
+import { generateTextKey, calculateRatingWidth } from '../utils';
+import Map from '../components/map';
+import NearPlaces from '../components/near-places';
 import { useSelector } from 'react-redux';
 import { fetchNearbyOffers, fetchOfferById } from '../redux/offers-slice';
 import Spinner from '../components/spinner/spinner';
 import { useAppDispatch } from '../redux/store';
 import NotFoundPage from './not-found-page';
 import { selectLoading, selectError, selectCurrentOffer, selectNearbyOffers } from '../redux/offers-selectors';
-import HeaderComponent from '../components/header';
+import Header from '../components/header';
 import { toggleFavorite } from '../redux/favorites-slice';
 import { selectFavorites } from '../redux/favorites-selectors';
 import FavoriteButton from '../components/favorite-button';
 import { selectIsAuth } from '../redux/auth-selectors';
+import { FAVORITE_BUTTON_SIZES } from '../const';
 
 export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.Element {
   const { id } = useParams<{ id: string | undefined }>();
@@ -91,7 +92,7 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
 
   return (
     <>
-      <HeaderComponent />
+      <Header />
       <main className="page__main page__main--offer">
         <section className="offer">
           <div className="offer__gallery-container container">
@@ -120,8 +121,8 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
                   offerId={currentOffer.id}
                   isFavorite={isFavorite}
                   className="offer"
-                  width={31}
-                  height={33}
+                  width={FAVORITE_BUTTON_SIZES.FAVORITES.width}
+                  height={FAVORITE_BUTTON_SIZES.FAVORITES.height}
                   onClick={handleFavoriteClick}
                 />
               </div>
@@ -196,14 +197,14 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
             </div>
           </div>
           <section className="offer__map map">
-            <MapComponent
+            <Map
               city={{city}}
               offers={mapOffers}
               selectedOffer={selectedOffer}
             />
           </section>
           <div className="container">
-            <NearPlacesComponent
+            <NearPlaces
               offers={nearestOffers.filter((nearbyoffer) => nearbyoffer.id !== id)}
               setActiveCard = {setActiveCard}
             />

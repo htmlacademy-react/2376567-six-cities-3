@@ -6,12 +6,22 @@ import { dropToken } from '../token';
 import { AuthorizationStatus } from '../types';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../const';
+import { fetchFavorites } from '../redux/favorites-slice';
+import { useEffect } from 'react';
+import { AppDispatch } from '../redux/store';
 
-export default function NavigationComponent(): JSX.Element {
+export default function Navigation(): JSX.Element {
   const isAuth = useSelector(selectIsAuth);
   const userEmail = useSelector(selectUserEmail);
   const favoritesCount = useSelector(selectFavoritesCount);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
+
+
+  useEffect(() => {
+    if (isAuth) {
+      dispatch(fetchFavorites());
+    }
+  }, [isAuth, dispatch]);
 
   const handleSignOut = () => {
     dropToken();
@@ -31,7 +41,7 @@ export default function NavigationComponent(): JSX.Element {
               </Link>
             </li>
             <li className="header__nav-item">
-              <a className="header__nav-link" href="#" onClick={handleSignOut}>
+              <a className="header__nav-link" onClick={handleSignOut}>
                 <span className="header__signout">Sign out</span>
               </a>
             </li>

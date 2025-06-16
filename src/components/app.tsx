@@ -15,7 +15,7 @@ import Spinner from './spinner/spinner';
 import { api, AppDispatch } from '../redux/store';
 import { AuthorizationStatus } from '../types';
 import { clearAuth, setAuthData, setAuthorizationStatus } from '../redux/auth-slice';
-import { selectIsAuth } from '../redux/auth-selectors';
+import { selectAuthLoading, selectIsAuth } from '../redux/auth-selectors';
 import { dropToken, getToken } from '../token';
 
 function App(): JSX.Element {
@@ -50,7 +50,8 @@ function App(): JSX.Element {
   }, [dispatch]);
 
   const cityOffers = useSelector(selectOffers);
-  const isLoading = useSelector(selectLoading);
+  const isOffersLoading = useSelector(selectLoading);
+  const isAuthLoading = useSelector(selectAuthLoading);
   const error = useSelector(selectError);
 
   const [activeCard, setActiveCard] = useState<string | null>(null);
@@ -63,12 +64,12 @@ function App(): JSX.Element {
     dispatch(setAuthorizationStatus(token ? AuthorizationStatus.AUTH : AuthorizationStatus.NO_AUTH));
   }, [dispatch]);
 
-  if (isLoading) {
+  if (isOffersLoading && isAuthLoading) {
     return <Spinner />;
   }
 
   if (error) {
-    return <div>Ошибка: {error}</div>;
+    return <NotFoundPage/>;
   }
 
   return (

@@ -91,4 +91,25 @@ const cities: City[] = [
   }
 ];
 
-export { AppRoute, URL_MARKER, locationItems, cities };
+const REVIEW_LENGTH = {
+  MIN: 50,
+  MAX: 300
+} as const;
+
+const FAVORITE_BUTTON_SIZES = {
+  DEFAULT: { width: 18, height: 19 },
+  FAVORITES: { width: 31, height: 33 },
+} as const;
+
+const CARD_IMAGE_SIZES = {
+  favorites: {
+    width: 150,
+    height: 110,
+  },
+  default: {
+    width: 260,
+    height: 200,
+  },
+} as const;
+
+export { AppRoute, URL_MARKER, locationItems, cities, REVIEW_LENGTH, FAVORITE_BUTTON_SIZES, CARD_IMAGE_SIZES };

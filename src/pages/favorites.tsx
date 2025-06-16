@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import { useAppDispatch } from '../redux/store';
 import { fetchFavorites } from '../redux/favorites-slice';
-import { groupByCity } from '../utils';
-import HeaderComponent from '../components/header';
+import { calculateRatingWidth, groupByCity } from '../utils';
+import Header from '../components/header';
 import { Link } from 'react-router-dom';
-import { AppRoute } from '../const';
+import { AppRoute, CARD_IMAGE_SIZES, FAVORITE_BUTTON_SIZES } from '../const';
 import FavoriteButton from '../components/favorite-button';
 import { useSelector } from 'react-redux';
 import { selectFavorites, selectFavoritesError, selectFavoritesLoading } from '../redux/favorites-selectors';
+import Spinner from '../components/spinner/spinner';
 
 function FavoritesPage() {
   const dispatch = useAppDispatch();
@@ -20,7 +21,7 @@ function FavoritesPage() {
   }, [dispatch]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    <Spinner/>;
   }
 
   if (error) {
@@ -31,7 +32,7 @@ function FavoritesPage() {
 
   return (
     <div className="page">
-      <HeaderComponent />
+      <Header />
       <main className="page__main page__main--favorites">
         <div className="page__favorites-container container">
           {favorites.length === 0 ? (
@@ -68,8 +69,8 @@ function FavoritesPage() {
                               <img
                                 className="place-card__image"
                                 src={card.previewImage}
-                                width={150}
-                                height={110}
+                                width={CARD_IMAGE_SIZES.default.width}
+                                height={CARD_IMAGE_SIZES.default.height}
                                 alt="Place image"
                               />
                             </Link>
@@ -84,13 +85,13 @@ function FavoritesPage() {
                                 offerId={card.id}
                                 isFavorite={card.isFavorite}
                                 className="place-card"
-                                width={18}
-                                height={19}
+                                width={FAVORITE_BUTTON_SIZES.FAVORITES.width}
+                                height={FAVORITE_BUTTON_SIZES.FAVORITES.height}
                               />
                             </div>
                             <div className="place-card__rating rating">
                               <div className="place-card__stars rating__stars">
-                                <span style={{ width: `${(card.rating / 5) * 100}%` }}></span>
+                                <span style={{ width: `${(calculateRatingWidth(card.rating))}%` }}></span>
                                 <span className="visually-hidden">Rating</span>
                               </div>
                             </div>

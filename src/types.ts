@@ -95,7 +95,7 @@ type OfferPageProps = {
 }
 
 type ReviewFormProps = {
-  onSubmit: (data: { rating: number; comment: string}) => void;
+  onSubmit: (data: { rating: number; comment: string }) => Promise<void> | void;
   loading?: boolean;
   error?: string | null;
 };
@@ -193,7 +193,7 @@ type LocationItemArray = LocationItem[];
 
 type FavoriteButtonProps = {
   offerId: string;
-  isFavorite: boolean;
+  isFavorite: boolean | undefined;
   className?: string;
   width?: number;
   height?: number;

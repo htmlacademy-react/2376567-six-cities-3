@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../const';
-import { CardProps} from '../types';
+import { CardProps } from '../types';
 import FavoriteButton from './favorite-button';
 import { useAppDispatch } from '../redux/store';
 import { selectOffers } from '../redux/offers-selectors';
 import { useSelector } from 'react-redux';
-import { toggleFavorite } from '../redux/favorites-slice';
+import { fetchFavorites, toggleFavorite } from '../redux/favorites-slice';
 import { selectFavorites } from '../redux/favorites-selectors';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect } from 'react';
+import { selectIsAuth } from '../redux/auth-selectors';
 
 function CardComponent({
   card,
@@ -28,22 +29,30 @@ function CardComponent({
   const dispatch = useAppDispatch();
   const offers = useSelector(selectOffers);
   const favorites = useSelector(selectFavorites);
+  const isAuth = useSelector(selectIsAuth);
 
   const currentCard = offers.find((o) => o.id === card.id) || card;
-  const isFavorite = favorites.some((fav) => fav.id === card.id) || currentCard.isFavorite;
+  const isFavorite = isAuth && (favorites.some((fav) => fav.id === card.id) || currentCard.isFavorite);
 
   const handleFavoriteClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     dispatch(toggleFavorite({
       offerId: currentCard.id,
-      status: currentCard.isFavorite ? 0 : 1
+      status: isFavorite ? 0 : 1
     }));
-  }, [currentCard.id, currentCard.isFavorite, dispatch]);
+  }, [currentCard.id, isFavorite, dispatch]);
 
   const handleMouseEnter = useCallback(() => onMouseEnter?.(id), [onMouseEnter, id]);
   const handleMouseLeave = useCallback(() => onMouseLeave?.(), [onMouseLeave]);
 
   const ratingWidth = `${Math.round(rating) * 20}%`;
+
+  useEffect(() => {
+    if (isAuth) {
+      dispatch(fetchFavorites());
+    }
+  }, [isAuth, dispatch]);
 
   return (
     <article

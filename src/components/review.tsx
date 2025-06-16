@@ -23,11 +23,11 @@ export function ReviewsSection({ offerId }: { offerId: string | undefined }) {
 
   const { authorizationStatus } = useSelector(selectAuthorizationStatus);
 
-  const handleReviewSubmit = (data: { rating: number; comment: string }) => {
+  const handleReviewSubmit = async (data: { rating: number; comment: string }) => {
     if (authorizationStatus !== AuthorizationStatus.AUTH) {
-      return;
+      throw new Error('Not authorized');
     }
-    dispatch(submitReview({ offerId, ...data }));
+    await dispatch(submitReview({ offerId, ...data })).unwrap();
   };
 
   useEffect(() => {
@@ -68,9 +68,6 @@ export function ReviewsSection({ offerId }: { offerId: string | undefined }) {
                   </div>
                   <span className="reviews__user-name">
                     {review.user.name}
-                    {review.user.isPro && (
-                      <span className="property__user-status">Pro</span>
-                    )}
                   </span>
                 </div>
                 <div className="reviews__info">

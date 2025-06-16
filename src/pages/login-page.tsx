@@ -9,6 +9,7 @@ import { cities } from '../const';
 import { getRandomInt } from '../utils';
 import { changeCity } from '../redux/city-slice';
 import { City } from '../types';
+import { fetchFavorites } from '../redux/favorites-slice';
 
 export function LoginPage(): JSX.Element {
   const [email, setEmail] = useState('');
@@ -29,9 +30,10 @@ export function LoginPage(): JSX.Element {
 
   useEffect(() => {
     if (isAuth) {
+      dispatch(fetchFavorites());
       navigate(AppRoute.Main);
     }
-  }, [isAuth, navigate]);
+  }, [dispatch, isAuth, navigate]);
 
   const validateEmail = (value: string): boolean => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

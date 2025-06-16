@@ -6,10 +6,12 @@ import { toggleFavorite } from '../redux/favorites-slice';
 import { selectFavorites } from '../redux/favorites-selectors';
 import { useSelector } from 'react-redux';
 import FavoriteButton from '../components/favorite-button';
+import { selectIsAuth } from '../redux/auth-selectors';
 
 export default function NearPlacesComponent({ offers, setActiveCard }: NearPlacesProps): JSX.Element {
   const dispatch = useAppDispatch();
   const favorites = useSelector(selectFavorites);
+  const isAuth = useSelector(selectIsAuth);
   const nearestOffers = offers.slice(0, 3);
 
   const handleFavoriteClick = (offerId: string, isFavorite: boolean, evt: React.MouseEvent) => {
@@ -26,7 +28,7 @@ export default function NearPlacesComponent({ offers, setActiveCard }: NearPlace
       <h2 className="near-places__title">Other places in the neighbourhood</h2>
       <div className="near-places__list places__list">
         {nearestOffers.map((offer) => {
-          const isFavorite = favorites.some((favorite) => favorite.id === offer.id) || offer.isFavorite;
+          const isFavorite = isAuth && (favorites.some((favorite) => favorite.id === offer.id) || offer.isFavorite);
 
           return (
             <article

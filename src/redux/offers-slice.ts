@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { OfferCard, Review, OffersState } from '../types';
+import { OfferCard, Review, OffersState, AuthorizationStatus } from '../types';
 import axios, { AxiosInstance } from 'axios';
 import { toggleFavorite } from './favorites-slice';
+import { logout, setAuthData } from './auth-slice';
 
 const initialState: OffersState = {
   data: [],
@@ -169,6 +170,36 @@ const offersSlice = createSlice({
         state.nearbyOffers = state.nearbyOffers.map((offer) =>
           offer.id === updatedOffer.id ? updatedOffer : offer
         );
+      })
+      .addCase(logout, (state) => {
+        state.data = state.data.map((offer) => ({
+          ...offer,
+          isFavorite: false
+        }));
+
+        if (state.currentOffer) {
+          state.currentOffer.isFavorite = false;
+        }
+
+        state.nearbyOffers = state.nearbyOffers.map((offer) => ({
+          ...offer,
+          isFavorite: false
+        }));
+      })
+      .addCase(setAuthData, (state, action) => {
+        if (action.payload.status === AuthorizationStatus.NO_AUTH) {
+          state.data = state.data.map((offer) => ({
+            ...offer,
+            isFavorite: false
+          }));
+          if (state.currentOffer) {
+            state.currentOffer.isFavorite = false;
+          }
+          state.nearbyOffers = state.nearbyOffers.map((offer) => ({
+            ...offer,
+            isFavorite: false
+          }));
+        }
       });
   }
 });

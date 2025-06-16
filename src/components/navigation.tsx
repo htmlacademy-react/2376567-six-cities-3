@@ -6,12 +6,22 @@ import { dropToken } from '../token';
 import { AuthorizationStatus } from '../types';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../const';
+import { fetchFavorites } from '../redux/favorites-slice';
+import { useEffect } from 'react';
+import { AppDispatch } from '../redux/store';
 
 export default function NavigationComponent(): JSX.Element {
   const isAuth = useSelector(selectIsAuth);
   const userEmail = useSelector(selectUserEmail);
   const favoritesCount = useSelector(selectFavoritesCount);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
+
+
+  useEffect(() => {
+    if (isAuth) {
+      dispatch(fetchFavorites());
+    }
+  }, [isAuth, dispatch]);
 
   const handleSignOut = () => {
     dropToken();

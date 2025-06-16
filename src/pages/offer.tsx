@@ -15,6 +15,7 @@ import HeaderComponent from '../components/header';
 import { toggleFavorite } from '../redux/favorites-slice';
 import { selectFavorites } from '../redux/favorites-selectors';
 import FavoriteButton from '../components/favorite-button';
+import { selectIsAuth } from '../redux/auth-selectors';
 
 export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.Element {
   const { id } = useParams<{ id: string | undefined }>();
@@ -25,6 +26,9 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
   const favorites = useSelector(selectFavorites);
+  const isAuth = useSelector(selectIsAuth);
+
+  const isFavorite = isAuth && (favorites.some((favorite) => favorite.id === currentOffer?.id) || currentOffer?.isFavorite);
 
   useEffect(() => {
     if (id && (!currentOffer || currentOffer.id !== id)) {
@@ -51,8 +55,6 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
   if (!currentOffer) {
     return <NotFoundPage/>;
   }
-
-  const isFavorite = favorites.some((favorite) => favorite.id === currentOffer.id) || currentOffer.isFavorite;
 
   const handleFavoriteClick = (evt: React.MouseEvent) => {
     evt.preventDefault();

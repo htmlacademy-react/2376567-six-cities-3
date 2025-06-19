@@ -5,9 +5,9 @@ import FavoriteButton from './favorite-button';
 import { useAppDispatch } from '../redux/store';
 import { selectOffers } from '../redux/offers-selectors';
 import { useSelector } from 'react-redux';
-import { fetchFavorites, toggleFavorite } from '../redux/favorites-slice';
+import { toggleFavorite } from '../redux/favorites-slice';
 import { selectFavorites } from '../redux/favorites-selectors';
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback } from 'react';
 import { selectIsAuth } from '../redux/auth-selectors';
 import { calculateRatingWidth } from '../utils';
 
@@ -46,12 +46,6 @@ function Card({
 
   const handleMouseEnter = useCallback(() => onMouseEnter?.(id), [onMouseEnter, id]);
   const handleMouseLeave = useCallback(() => onMouseLeave?.(), [onMouseLeave]);
-
-  useEffect(() => {
-    if (isAuth) {
-      dispatch(fetchFavorites());
-    }
-  }, [isAuth, dispatch]);
 
   return (
     <article

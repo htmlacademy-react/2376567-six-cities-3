@@ -1,15 +1,12 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppRoute } from '../const';
-import { useSelector } from 'react-redux';
-import { selectIsAuth } from '../redux/auth-selectors';
 import { loginAction } from '../redux/auth-slice';
 import { useAppDispatch } from '../redux/store';
 import { cities } from '../const';
 import { getRandomInt } from '../utils';
 import { changeCity } from '../redux/city-slice';
 import { City } from '../types';
-import { fetchFavorites } from '../redux/favorites-slice';
 
 export function LoginPage(): JSX.Element {
   const [email, setEmail] = useState('');
@@ -18,7 +15,6 @@ export function LoginPage(): JSX.Element {
   const [passwordError, setPasswordError] = useState('');
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const isAuth = useSelector(selectIsAuth);
 
   const handleClick = (cityName: City) => {
     dispatch(changeCity(cityName));
@@ -26,14 +22,6 @@ export function LoginPage(): JSX.Element {
   };
 
   const randomCities = cities[getRandomInt(0, cities.length - 1)];
-
-
-  useEffect(() => {
-    if (isAuth) {
-      dispatch(fetchFavorites());
-      navigate(AppRoute.Main);
-    }
-  }, [dispatch, isAuth, navigate]);
 
   const validateEmail = (value: string): boolean => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

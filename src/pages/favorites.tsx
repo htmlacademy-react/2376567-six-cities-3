@@ -1,6 +1,3 @@
-import { useEffect } from 'react';
-import { useAppDispatch } from '../redux/store';
-import { fetchFavorites } from '../redux/favorites-slice';
 import { calculateRatingWidth, groupByCity } from '../utils';
 import Header from '../components/header';
 import { Link } from 'react-router-dom';
@@ -11,14 +8,9 @@ import { selectFavorites, selectFavoritesError, selectFavoritesLoading } from '.
 import Spinner from '../components/spinner/spinner';
 
 function FavoritesPage() {
-  const dispatch = useAppDispatch();
   const favorites = useSelector(selectFavorites);
   const loading = useSelector(selectFavoritesLoading);
   const error = useSelector(selectFavoritesError);
-
-  useEffect(() => {
-    dispatch(fetchFavorites());
-  }, [dispatch]);
 
   if (loading) {
     <Spinner/>;

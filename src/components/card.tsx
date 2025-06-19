@@ -1,15 +1,15 @@
+import { memo, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { AppRoute, CARD_IMAGE_SIZES, FAVORITE_BUTTON_SIZES } from '../const';
-import { CardProps } from '../types';
-import FavoriteButton from './favorite-button';
-import { useAppDispatch } from '../redux/store';
-import { selectOffers } from '../redux/offers-selectors';
-import { useSelector } from 'react-redux';
-import { toggleFavorite } from '../redux/favorites-slice';
-import { selectFavorites } from '../redux/favorites-selectors';
-import { memo, useCallback } from 'react';
 import { selectIsAuth } from '../redux/auth-selectors';
+import { selectFavorites } from '../redux/favorites-selectors';
+import { toggleFavorite } from '../redux/favorites-slice';
+import { selectOffers } from '../redux/offers-selectors';
+import { useAppDispatch } from '../redux/store';
+import { CardProps } from '../types';
 import { calculateRatingWidth } from '../utils';
+import FavoriteButton from './favorite-button';
 
 function Card({
   card,

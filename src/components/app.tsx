@@ -1,22 +1,23 @@
+import { useState , useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
 import { AppRoute } from '../const';
 import FavoritesPage from '../pages/favorites';
 import { LoginPage } from '../pages/login-page';
 import MainPage from '../pages/main-page';
 import NotFoundPage from '../pages/not-found-page';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import PrivateRoute from './private-route';
 import { OfferPage } from '../pages/offer';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { fetchOffers } from '../redux/offers-slice';
-import { selectOffers, selectError, selectLoading } from '../redux/offers-selectors';
-import Spinner from './spinner/spinner';
-import { api, AppDispatch } from '../redux/store';
-import { AuthorizationStatus } from '../types';
-import { clearAuth, setAuthData } from '../redux/auth-slice';
 import { selectAuthLoading, selectIsAuth } from '../redux/auth-selectors';
+import { clearAuth, setAuthData } from '../redux/auth-slice';
+import { selectOffers, selectError, selectLoading } from '../redux/offers-selectors';
+import { fetchOffers } from '../redux/offers-slice';
+import { api, AppDispatch } from '../redux/store';
 import { dropToken, getToken } from '../token';
+import { AuthorizationStatus } from '../types';
+
+import PrivateRoute from './private-route';
+import Spinner from './spinner/spinner';
 
 function App(): JSX.Element {
 
@@ -53,6 +54,7 @@ function App(): JSX.Element {
   const isOffersLoading = useSelector(selectLoading);
   const isAuthLoading = useSelector(selectAuthLoading);
   const error = useSelector(selectError);
+
 
   const [activeCard, setActiveCard] = useState<string | null>(null);
   const isAuth = useSelector(selectIsAuth);

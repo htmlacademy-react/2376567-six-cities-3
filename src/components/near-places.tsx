@@ -50,8 +50,8 @@ export default function NearPlaces({ offers, setActiveCard }: NearPlacesProps): 
                   <img
                     className="place-card__image"
                     src={offer.previewImage}
-                    width={CARD_IMAGE_SIZES.favorites.width}
-                    height={CARD_IMAGE_SIZES.favorites.height}
+                    width={CARD_IMAGE_SIZES.default.width}
+                    height={CARD_IMAGE_SIZES.default.height}
                     alt="Place image"
                   />
                 </Link>

@@ -20,13 +20,6 @@ const reviewSlice = createSlice({
     clearReviewError(state) {
       state.error = null;
     },
-    startSendingReview(state) {
-      state.isSending = true;
-      state.error = null;
-    },
-    finishSendingReview(state) {
-      state.isSending = false;
-    },
     setReviewSendingStatus: (state, action: PayloadAction<boolean>) => {
       state.isSending = action.payload;
     },
@@ -36,8 +29,6 @@ const reviewSlice = createSlice({
 export const {
   setReviewError,
   clearReviewError,
-  startSendingReview,
-  finishSendingReview,
   setReviewSendingStatus
 } = reviewSlice.actions;
 

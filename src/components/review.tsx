@@ -14,6 +14,8 @@ import {
 } from '../redux/review-selectors';
 import { calculateRatingWidth } from '../utils';
 
+const MAX_REVIEWS = 10;
+
 export function ReviewsSection({ offerId }: { offerId: string | undefined }) {
   const dispatch = useAppDispatch();
 
@@ -47,12 +49,12 @@ export function ReviewsSection({ offerId }: { offerId: string | undefined }) {
 
   const sortedAndLimitedReviews = [...reviews]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 10);
+    .slice(0, MAX_REVIEWS);
 
   return (
     <section className="offer__reviews reviews">
       <h2 className="reviews__title">
-        Reviews · <span className="reviews__amount">{sortedAndLimitedReviews.length}</span>
+        Reviews · <span className="reviews__amount">{reviews.length}</span>
       </h2>
 
       {sortedAndLimitedReviews.length > 0 && (

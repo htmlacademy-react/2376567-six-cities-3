@@ -18,6 +18,8 @@ import FavoriteButton from '../components/favorite-button';
 import { selectIsAuth } from '../redux/auth-selectors';
 import { FAVORITE_BUTTON_SIZES } from '../const';
 
+const MAX_GALLERY_IMAGES = 6;
+
 export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.Element {
   const { id } = useParams<{ id: string | undefined }>();
   const dispatch = useAppDispatch();
@@ -97,7 +99,7 @@ export function OfferPage({ activeCard, setActiveCard }: OfferPageProps): JSX.El
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {imagesWithId.slice(0, 6).map((image) => (
+              {imagesWithId.slice(0, MAX_GALLERY_IMAGES).map((image) => (
                 <div key={image.id} className="offer__image-wrapper">
                   <img className="offer__image" src={image.url} alt={`Photo ${image.id}`} />
                 </div>

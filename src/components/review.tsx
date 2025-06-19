@@ -52,7 +52,7 @@ export function ReviewsSection({ offerId }: { offerId: string | undefined }) {
   return (
     <section className="offer__reviews reviews">
       <h2 className="reviews__title">
-        Reviews · <span className="reviews__amount">{sortedAndLimitedReviews.length}</span>
+        Reviews · <span className="reviews__amount">{reviews.length}</span>
       </h2>
 
       {sortedAndLimitedReviews.length > 0 && (

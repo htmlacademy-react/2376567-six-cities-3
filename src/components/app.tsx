@@ -59,9 +59,6 @@ function App(): JSX.Element {
 
   useEffect(() => {
     dispatch(fetchOffers());
-
-    const token = getToken();
-    dispatch(setAuthorizationStatus(token ? AuthorizationStatus.AUTH : AuthorizationStatus.NO_AUTH));
   }, [dispatch]);
 
   if (isOffersLoading && isAuthLoading) {

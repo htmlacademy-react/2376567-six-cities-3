@@ -17,8 +17,3 @@ export const selectFavoritesLoading = createSelector(
   selectFavoritesState,
   (favorites) => favorites.loading
 );
-
-export const selectFavoritesError = createSelector(
-  selectFavoritesState,
-  (favorites) => favorites.error
-);

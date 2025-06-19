@@ -4,20 +4,15 @@ import { Link } from 'react-router-dom';
 import { AppRoute, CARD_IMAGE_SIZES, FAVORITE_BUTTON_SIZES } from '../const';
 import FavoriteButton from '../components/favorite-button';
 import { useSelector } from 'react-redux';
-import { selectFavorites, selectFavoritesError, selectFavoritesLoading } from '../redux/favorites-selectors';
+import { selectFavorites, selectFavoritesLoading } from '../redux/favorites-selectors';
 import Spinner from '../components/spinner/spinner';
 
 function FavoritesPage() {
   const favorites = useSelector(selectFavorites);
   const loading = useSelector(selectFavoritesLoading);
-  const error = useSelector(selectFavoritesError);
 
   if (loading) {
     <Spinner/>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
   }
 
   const groupedFavorites = groupByCity(favorites);
@@ -77,8 +72,8 @@ function FavoritesPage() {
                                 offerId={card.id}
                                 isFavorite={card.isFavorite}
                                 className="place-card"
-                                width={FAVORITE_BUTTON_SIZES.FAVORITES.width}
-                                height={FAVORITE_BUTTON_SIZES.FAVORITES.height}
+                                width={FAVORITE_BUTTON_SIZES.DEFAULT.width}
+                                height={FAVORITE_BUTTON_SIZES.DEFAULT.height}
                               />
                             </div>
                             <div className="place-card__rating rating">
@@ -90,7 +85,7 @@ function FavoritesPage() {
                             <h2 className="place-card__name">
                               <Link to={`${AppRoute.Offer}/${card.id}`}>{card.title}</Link>
                             </h2>
-                            <p className="place-card__type">{card.type}</p>
+                            <p className="place-card__type">{card.type.charAt(0).toUpperCase() + card.type.slice(1)}</p>
                           </div>
                         </article>
                       ))}

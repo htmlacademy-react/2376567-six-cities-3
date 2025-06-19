@@ -14,7 +14,7 @@ import { selectOffers, selectError, selectLoading } from '../redux/offers-select
 import Spinner from './spinner/spinner';
 import { api, AppDispatch } from '../redux/store';
 import { AuthorizationStatus } from '../types';
-import { clearAuth, setAuthData, setAuthorizationStatus } from '../redux/auth-slice';
+import { clearAuth, setAuthData } from '../redux/auth-slice';
 import { selectAuthLoading, selectIsAuth } from '../redux/auth-selectors';
 import { dropToken, getToken } from '../token';
 

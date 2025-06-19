@@ -56,8 +56,8 @@ function FavoritesPage() {
                               <img
                                 className="place-card__image"
                                 src={card.previewImage}
-                                width={CARD_IMAGE_SIZES.default.width}
-                                height={CARD_IMAGE_SIZES.default.height}
+                                width={CARD_IMAGE_SIZES.favorites.width}
+                                height={CARD_IMAGE_SIZES.favorites.height}
                                 alt="Place image"
                               />
                             </Link>

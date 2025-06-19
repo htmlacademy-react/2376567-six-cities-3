@@ -31,9 +31,9 @@ function FavoritesPage() {
   const groupedFavorites = groupByCity(favorites);
 
   return (
-    <div className="page">
+    <div className={`page ${favorites.length === 0 && 'page--favorites-empty'}`}>
       <Header />
-      <main className="page__main page__main--favorites">
+      <main className={`page__main page__main--favorites ${favorites.length === 0 && 'page__main--favorites-empty'}`}>
         <div className="page__favorites-container container">
           {favorites.length === 0 ? (
             <section className="favorites favorites--empty">
@@ -110,6 +110,17 @@ function FavoritesPage() {
           )}
         </div>
       </main>
+      <footer className="footer">
+        <Link className="footer__logo-link" to="/">
+          <img
+            className="footer__logo"
+            src="img/logo.svg"
+            alt="6 cities logo"
+            width={64}
+            height={33}
+          />
+        </Link>
+      </footer>
     </div>
   );
 }

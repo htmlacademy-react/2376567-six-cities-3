@@ -21,7 +21,7 @@ export default function Navigation(): JSX.Element {
     if (isAuth) {
       dispatch(fetchFavorites());
     }
-  }, [isAuth, dispatch]);
+  }, [dispatch, isAuth]);
 
   const handleSignOut = () => {
     dropToken();

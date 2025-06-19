@@ -9,11 +9,13 @@ import FavoriteButton from '../components/favorite-button';
 import { selectIsAuth } from '../redux/auth-selectors';
 import { calculateRatingWidth } from '../utils';
 
+const NEARBY_OFFERS_LIMIT = 3;
+
 export default function NearPlaces({ offers, setActiveCard }: NearPlacesProps): JSX.Element {
   const dispatch = useAppDispatch();
   const favorites = useSelector(selectFavorites);
   const isAuth = useSelector(selectIsAuth);
-  const nearestOffers = offers.slice(0, 3);
+  const nearestOffers = offers.slice(0, NEARBY_OFFERS_LIMIT);
 
   const handleFavoriteClick = (offerId: string, isFavorite: boolean, evt: React.MouseEvent) => {
     evt.preventDefault();
@@ -50,8 +52,8 @@ export default function NearPlaces({ offers, setActiveCard }: NearPlacesProps): 
                   <img
                     className="place-card__image"
                     src={offer.previewImage}
-                    width={CARD_IMAGE_SIZES.favorites.width}
-                    height={CARD_IMAGE_SIZES.favorites.height}
+                    width={CARD_IMAGE_SIZES.default.width}
+                    height={CARD_IMAGE_SIZES.default.height}
                     alt="Place image"
                   />
                 </Link>
